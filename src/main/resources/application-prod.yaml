@@ -1,0 +1,15 @@
+server:
+  port: 9000
+---
+
+spring:
+  config:
+    import: optional:file:.env[.properties]
+
+  application:
+    version: "Booking app"
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+
+website-url : https://mystore.com
