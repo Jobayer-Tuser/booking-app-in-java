@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.booking.exception.ResourcesNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProductService implements ProductInterface {
@@ -27,5 +29,11 @@ public class ProductService implements ProductInterface {
         productRepository.save(product);
 
         return productMapper.toDto(product);
+    }
+
+    @Override
+    public List<ProductDto> fetchAllProducts() {
+        List<Product> products = productRepository.findAll();
+        return productMapper.toMultipleDto(products);
     }
 }
