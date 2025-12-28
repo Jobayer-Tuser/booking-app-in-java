@@ -1,4 +1,9 @@
 package org.booking.product;
 
-public class ProductMapper {
+import org.mapstruct.Mapper;
+
+@Mapper(componentModel = "spring")
+public interface ProductMapper {
+    Product toEntity(CreateProductRequest request);
+    ProductDto toDto(Product product);
 }
