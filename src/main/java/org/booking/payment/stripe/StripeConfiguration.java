@@ -1,4 +1,4 @@
-package org.booking.payment;
+package org.booking.payment.stripe;
 
 import com.stripe.Stripe;
 import jakarta.annotation.PostConstruct;

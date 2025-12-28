@@ -1,4 +1,4 @@
-package org.booking.payment;
+package org.booking.payment.stripe;
 
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
@@ -11,6 +11,10 @@ import org.booking.checkout.CheckoutSession;
 import org.booking.order.Order;
 import org.booking.order.OrderItem;
 import org.booking.checkout.WebhookRequest;
+import org.booking.order.OrderStatus;
+import org.booking.payment.PaymentException;
+import org.booking.payment.PaymentGateway;
+import org.booking.payment.PaymentResult;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

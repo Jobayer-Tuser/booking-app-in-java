@@ -3,7 +3,6 @@ package org.booking.order;
 import jakarta.persistence.*;
 import lombok.*;
 import org.booking.cart.Cart;
-import org.booking.payment.OrderStatus;
 import org.booking.user.User;
 
 import java.math.BigDecimal;

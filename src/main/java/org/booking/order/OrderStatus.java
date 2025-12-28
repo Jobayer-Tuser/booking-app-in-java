@@ -1,4 +1,4 @@
-package org.booking.payment;
+package org.booking.order;
 
 public enum OrderStatus {
     Pending,
