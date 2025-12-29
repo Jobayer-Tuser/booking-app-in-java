@@ -1,6 +1,7 @@
 package org.booking.user;
 
 import lombok.AllArgsConstructor;
+import org.booking.exception.ResourcesNotFoundException;
 import org.booking.role.RoleInterface;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,14 +47,11 @@ public class UserService implements UserInterface, UserDetailsService
 
     @Override
     public UserDto updateUser(Long id, UpdateUserRequest request) {
-        User user = userRepository.findById(id).orElse(null);
+        User user = userRepository.findById(id).orElseThrow(
+                ()-> new ResourcesNotFoundException("User with ID " + id + " not found"));
 
-        if (!(user == null)){
-            User updateUser = userRepository.save(userMapper.toUpdateEntity(user, request));
-            return userMapper.toSingleDto(updateUser);
-        }
-
-        return null;
+        User updateUser = userRepository.save(userMapper.toUpdateEntity(user, request));
+        return userMapper.toSingleDto(updateUser);
     }
 
     @Override
