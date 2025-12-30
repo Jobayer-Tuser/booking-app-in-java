@@ -1,10 +1,13 @@
 package org.booking.user;
 
 import jakarta.persistence.*;
+import jdk.jfr.Unsigned;
 import lombok.*;
+import org.booking.properties.Property;
 import org.booking.role.Role;
 import org.booking.store.Address;
 import org.booking.store.Tag;
+import org.booking.userprofiles.UserProfile;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.springframework.boot.context.properties.bind.DefaultValue;
@@ -26,6 +29,7 @@ public class User
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Unsigned
     private Long id;
     private String name;
     private String displayName;
@@ -51,6 +55,12 @@ public class User
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<Tag> tags = new HashSet<>();
+
+    @OneToOne(mappedBy = "user")
+    private UserProfile profile;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Property> properties = new ArrayList<>();
 
     @PrePersist
     protected void onCreate()
