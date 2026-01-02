@@ -15,6 +15,10 @@ spring:
     password: ${DB_PASSWORD}
     driver-class-name: ${DB_DRIVER}
 
+  flyway:
+    enabled: true
+    location: classpath:database/migration
+
   servlet:
     multipart:
       max-file-size: 10MB

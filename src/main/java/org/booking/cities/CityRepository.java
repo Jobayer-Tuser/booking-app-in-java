@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface CityRepository extends JpaRepository<City, Long> {
 
     @Override
-    @EntityGraph(attributePaths = {})
+    @EntityGraph()
     Optional<City> findById(Long id);
 }

@@ -27,7 +27,7 @@ public class GeoObject {
     private LocalDateTime updatedAt;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "city_id")
     private City city;
 

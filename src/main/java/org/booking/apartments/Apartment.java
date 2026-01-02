@@ -1,15 +1,13 @@
-package org.booking.cities;
+package org.booking.apartments;
 
 import jakarta.persistence.*;
 import jdk.jfr.Unsigned;
 import lombok.*;
-import org.booking.countries.Country;
-import org.booking.geoobjects.GeoObject;
+import org.booking.cities.City;
+import org.booking.properties.Property;
+import org.booking.user.User;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -17,24 +15,22 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "cities")
-public class City {
+@Table(name = "apartments")
+public class Apartment {
     @Id
-    @Unsigned
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Unsigned
     private Long id;
+
     private String name;
-    private BigDecimal latitude;
-    private BigDecimal longitude;
+    private int capacityAdults;
+    private int capacityChildren;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "country_id")
-    private Country country;
-
-    @OneToMany(mappedBy = "city")
-    private List<GeoObject> geoObjects = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "property_id")
+    private Property property;
 
     @PrePersist
     protected void onCreate()

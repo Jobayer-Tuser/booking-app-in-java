@@ -3,11 +3,14 @@ package org.booking.properties;
 import jakarta.persistence.*;
 import jdk.jfr.Unsigned;
 import lombok.*;
+import org.booking.apartments.Apartment;
 import org.booking.cities.City;
 import org.booking.user.User;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -26,8 +29,8 @@ public class Property {
     private String addressPostcode;
     private BigDecimal latitude;
     private BigDecimal longitude;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
@@ -37,16 +40,19 @@ public class Property {
     @JoinColumn(name = "city_id")
     private City city;
 
+    @OneToMany(mappedBy = "property")
+    private List<Apartment> apartments = new ArrayList<>();
+
     @PrePersist
     protected void onCreate()
     {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
+        createdAt = Instant.now();
+        updatedAt = Instant.now();
     }
 
     @PreUpdate
     protected void onUpdate()
     {
-        updatedAt = LocalDateTime.now();
+        updatedAt = Instant.now();
     }
 }

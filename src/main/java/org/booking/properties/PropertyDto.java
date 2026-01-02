@@ -1,11 +1,11 @@
 package org.booking.properties;
 
-import org.booking.cities.City;
+import org.booking.cities.CityDto;
 
 public record PropertyDto(
         Long Id,
         String name,
         String addressStreet,
         String addressPostcode,
-        City city
+        CityDto city
 ){}
