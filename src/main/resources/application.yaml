@@ -17,7 +17,10 @@ spring:
 
   flyway:
     enabled: true
-    location: classpath:database/migration
+    user: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    locations: classpath:database/migration
+#    ignore-migration-patterns: repeatable:missing
 
   servlet:
     multipart:

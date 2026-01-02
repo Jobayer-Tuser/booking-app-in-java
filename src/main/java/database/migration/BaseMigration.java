@@ -16,7 +16,7 @@ public abstract class BaseMigration extends BaseJavaMigration {
 
     // creating tables
     protected void createTable(Context context, String tableName, String columns) throws SQLException {
-        execute(context, String.format("CREATE IF NOT EXISTS TABLE %s (%s)", tableName, columns));
+        execute(context, String.format("CREATE TABLE %s (%s) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", tableName, columns));
     }
 
     // dropping tables
@@ -27,6 +27,17 @@ public abstract class BaseMigration extends BaseJavaMigration {
     // adding columns
     protected void addColumn(Context context, String tableName, String columnDefinition) throws SQLException {
         execute(context, String.format("ALTER TABLE %s ADD COLUMN %s", tableName, columnDefinition));
+    }
+
+    // Add foreign key
+    protected ForeignKeyBuilder addForeignKey(Context context, String tableName, String constraintName,
+                                              String column, String refTable, String refColumn) {
+        return new ForeignKeyBuilder(context, tableName, constraintName, column, refTable, refColumn);
+    }
+
+    // Drop foreign key
+    protected void dropForeignKey(Context context, String tableName, String constraintName) throws SQLException {
+        execute(context, String.format("ALTER TABLE %s DROP FOREIGN KEY %s", tableName, constraintName));
     }
 
     // Drop column
@@ -61,20 +72,6 @@ public abstract class BaseMigration extends BaseJavaMigration {
         execute(context, String.format("CREATE UNIQUE INDEX %s ON %s(%s)", indexName, tableName, cols));
     }
 
-    // Add foreign key
-    protected void addForeignKey(Context context, String tableName, String constraintName,
-                                 String column, String refTable, String refColumn) throws SQLException {
-        String sql = String.format(
-                "ALTER TABLE %s ADD CONSTRAINT %s FOREIGN KEY (%s) REFERENCES %s(%s)",
-                tableName, constraintName, column, refTable, refColumn
-        );
-        execute(context, sql);
-    }
-
-    // Drop foreign key
-    protected void dropForeignKey(Context context, String tableName, String constraintName) throws SQLException {
-        execute(context, String.format("ALTER TABLE %s DROP FOREIGN KEY %s", tableName, constraintName));
-    }
 
     // Check if table exists
     protected boolean tableExists(Context context, String tableName) throws SQLException {
