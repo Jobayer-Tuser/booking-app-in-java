@@ -9,24 +9,23 @@ import java.util.Objects;
 public class Blueprint {
 
     private boolean isAlterMode = false;
-    private List<String> columnsToDrop = new ArrayList<>();
+    private String tableName;
+    private final List<String> columnsToDrop = new ArrayList<>();
     private final List<Column<?>> columns = new ArrayList<>();
     private final List<String> multiColumnUniques = new ArrayList<>();
 
-    private String tableName;
-
+    public Blueprint() {}
     public Blueprint(String tableName) {
         this.tableName = tableName;
     }
 
-    // Default constructor for backward compatibility if needed, or remove if not.
-    // Given the plan implies full replacement, I will replace the implicit default
-    // with the explicit on.
-    // Wait, the original code had no constructor, so it was default.
-    // I need to be careful about other usages. Schema creates it.
+    private <T extends Column<?>> T addColumn(T col) {
+        columns.add(col);
+        return col;
+    }
 
     public void id() {
-        columns.add(new Column<BigIntegerColumn>("id") { // anonymous class call
+        addColumn(new Column<BigIntegerColumn>("id") { // anonymous class call
             @Override
             public String getDefinition() {
                 return "id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY";
@@ -37,74 +36,51 @@ public class Blueprint {
     public ForeignIdColumn foreignId(String name) {
         var col = new ForeignIdColumn(name);
         col.setTable(this.tableName);
-        columns.add(col);
-        return col;
+        return addColumn(col);
     }
 
     public StringColumn string(String name, int length) {
-        var col = new StringColumn(name, length);
-        columns.add(col);
-        return col;
+        return addColumn(new StringColumn(name, length));
     }
 
     public StringColumn string(String name) {
-        var col = new StringColumn(name);
-        columns.add(col);
-        return col;
+        return addColumn(new StringColumn(name));
     }
 
     public DoubleColumn doubleColumn(String name) {
-        var col = new DoubleColumn(name);
-        columns.add(col);
-        return col;
+        return addColumn(new DoubleColumn(name));
     }
 
     public NumericColumn numeric(String name, int precision, int scale) {
-        var col = new NumericColumn(name, precision, scale);
-        columns.add(col);
-        return col;
+        return addColumn(new NumericColumn(name, precision, scale));
     }
 
     public NumericColumn numeric(String name) {
-        var col = new NumericColumn(name);
-        columns.add(col);
-        return col;
+        return addColumn(new NumericColumn(name));
     }
 
     public IntegerColumn integer(String name) {
-        var col = new IntegerColumn(name);
-        columns.add(col);
-        return col;
+        return addColumn(new IntegerColumn(name));
     }
 
     public BigIntegerColumn bigInteger(String name) {
-        var col = new BigIntegerColumn(name);
-        columns.add(col);
-        return col;
+        return addColumn(new BigIntegerColumn(name));
     }
 
     public TimeStampColumn timeStamp(String name) {
-        var col = new TimeStampColumn(name);
-        columns.add(col);
-        return col;
+        return addColumn(new TimeStampColumn(name));
     }
 
     public DateTimeColumn datetime(String name) {
-        var col = new DateTimeColumn(name);
-        columns.add(col);
-        return col;
+        return addColumn(new DateTimeColumn(name));
     }
 
     public DateColumn date(String name) {
-        var col = new DateColumn(name);
-        columns.add(col);
-        return col;
+        return addColumn(new DateColumn(name));
     }
 
     public TextColumn text(String name) {
-        var col = new TextColumn(name);
-        columns.add(col);
-        return col;
+        return addColumn(new TextColumn(name));
     }
 
     public void unique(String... columnNames) {
@@ -113,15 +89,11 @@ public class Blueprint {
     }
 
     public DecimalColumn decimal(String name, int scale, int precision) {
-        var col = new DecimalColumn(name, scale, precision);
-        columns.add(col);
-        return col;
+        return addColumn(new DecimalColumn(name, scale, precision));
     }
 
     public EnumColumn enumeration(String name, String... options) {
-        EnumColumn col = new EnumColumn(name, options);
-        columns.add(col);
-        return col;
+        return addColumn(new EnumColumn(name, options));
     }
 
     public String getSql(String tableName) {
@@ -138,6 +110,9 @@ public class Blueprint {
                 .map(ForeignIdColumn::getConstraintSql)
                 .filter(Objects::nonNull)
                 .forEach(columnParts::add);
+
+        // 3. Add Multi-column Unique Constraint
+        columnParts.addAll(multiColumnUniques);
 
         var finalQuery = String.join(", ", columnParts);
         return String.format("CREATE TABLE %s (%s)", tableName, finalQuery);
