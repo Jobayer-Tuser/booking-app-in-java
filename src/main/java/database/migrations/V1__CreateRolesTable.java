@@ -6,7 +6,7 @@ import org.flywaydb.core.api.migration.Context;
 import java.sql.SQLException;
 
 
-public class V2__CreateRolesTable extends BaseMigration {
+public class V1__CreateRolesTable extends BaseMigration {
 
     @Override
     public void migrate(Context context) throws SQLException {

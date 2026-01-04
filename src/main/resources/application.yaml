@@ -19,8 +19,8 @@ spring:
     enabled: true
     user: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    locations: classpath:database/migration
-#    ignore-migration-patterns: repeatable:missing
+    locations: classpath:database/migrations
+#    ignore-migrations-patterns: repeatable:missing
 
   servlet:
     multipart:

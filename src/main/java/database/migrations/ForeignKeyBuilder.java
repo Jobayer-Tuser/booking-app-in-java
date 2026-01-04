@@ -1,4 +1,4 @@
-package database.migration;
+package database.migrations;
 
 import org.flywaydb.core.api.migration.Context;
 
