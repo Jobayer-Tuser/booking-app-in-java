@@ -34,9 +34,10 @@ public class SecurityConfiguration {
                         manageSession -> manageSession.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/roles", "/api/roles/**").hasRole(UserRole.Admin.name())
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/users/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/token-refresh").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/checkout/webhook").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/properties/search").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> {

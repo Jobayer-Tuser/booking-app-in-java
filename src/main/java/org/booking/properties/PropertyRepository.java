@@ -4,6 +4,7 @@ import org.booking.apartments.Apartment;
 import org.booking.cities.City;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -13,12 +14,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PropertyRepository extends JpaRepository<Property, Long> {
+public interface PropertyRepository extends JpaRepository<Property, Long>, JpaSpecificationExecutor<Property> {
 
-    @EntityGraph(attributePaths = {"city"})
+    @EntityGraph(attributePaths = { "city" })
     List<Property> searchPropertiesByCity_Id(Long cityId);
 
-    @EntityGraph(attributePaths = {"city"})
+    @EntityGraph(attributePaths = { "city" })
     List<Property> findPropertiesByCity_Id(Long aLong);
 
     @Query(value = "SELECT * FROM properties WHERE city_id = :cityId", nativeQuery = true)

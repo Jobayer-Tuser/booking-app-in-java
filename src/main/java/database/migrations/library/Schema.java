@@ -13,7 +13,6 @@ public class Schema {
         callback.accept(table);
 
         String sql = table.getSql(tableName);
-        IO.println(sql);
         try (Statement statement = context.getConnection().createStatement()) {
             statement.execute(sql);
         }

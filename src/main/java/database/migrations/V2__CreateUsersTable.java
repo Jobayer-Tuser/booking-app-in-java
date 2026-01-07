@@ -1,11 +1,12 @@
 package database.migrations;
 
 import database.migrations.library.Schema;
+import org.flywaydb.core.api.migration.BaseJavaMigration;
 import org.flywaydb.core.api.migration.Context;
 
 import java.sql.SQLException;
 
-public class V2__CreateUsersTable extends BaseMigration {
+public class V2__CreateUsersTable extends BaseJavaMigration {
 
     @Override
     public void migrate(Context context) throws SQLException {

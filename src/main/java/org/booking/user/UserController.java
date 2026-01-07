@@ -35,7 +35,7 @@ public class UserController
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserRequest request, UriComponentsBuilder uriBuilder)
     {
         if (userInterface.isEmailExists(request.email())) {

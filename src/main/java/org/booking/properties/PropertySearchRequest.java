@@ -1,11 +1,17 @@
 package org.booking.properties;
 
+import jakarta.validation.constraints.Positive;
+
 public record PropertySearchRequest(
         Long cityId,
         Long countryId,
-        int adults,
-        int children,
+
+        @Positive
+        Integer adults,
+
+        @Positive
+        Integer children,
+
         String cityName,
         String countryName
-) {
-}
+) { }
