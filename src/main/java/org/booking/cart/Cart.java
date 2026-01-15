@@ -2,8 +2,8 @@ package org.booking.cart;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.booking.exception.ResourcesNotFoundException;
-import org.booking.product.Product;
+import org.booking.Exceptions.ResourcesNotFoundException;
+import org.booking.Product.Product;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;

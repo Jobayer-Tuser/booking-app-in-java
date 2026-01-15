@@ -2,15 +2,22 @@ package database.migrations.library.columns;
 
 public abstract class Column<T extends Column<T>> {
     protected String name;
-    protected Object defaultValue = null;
-    protected boolean nullable = true;
     protected boolean unique = false;
+    protected boolean nullable = false;
+    protected String afterColumn = null;
+    protected Object defaultValue = null;
 
     public Column(String name) { this.name = name; }
 
     @SuppressWarnings("unchecked")
-    public T notNull() {
-        this.nullable = false;
+    public T nullable() {
+        this.nullable = true;
+        return (T) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public T after(String columnName) {
+        this.afterColumn = columnName;
         return (T) this;
     }
 
@@ -30,6 +37,10 @@ public abstract class Column<T extends Column<T>> {
         if (defaultValue == null) return "";
         if (defaultValue instanceof String) return "DEFAULT '" + defaultValue + "'";
         return "DEFAULT " + defaultValue;
+    }
+
+    public String afterColumn() {
+        return afterColumn;
     }
 
     public abstract String getDefinition();

@@ -15,7 +15,7 @@ public class V14__CreatePropertiesTable extends BaseJavaMigration {
         Schema.create("properties", table -> {
             table.id();
             table.foreignId("owner_id").constrained("users");
-            table.foreignId("city_id").constrained("cities");
+            table.foreignId("city_id").constrained("City");
             table.string("name");
             table.string("address_street");
             table.string("address_postcode");

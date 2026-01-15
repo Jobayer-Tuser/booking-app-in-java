@@ -2,8 +2,8 @@ package org.booking.cart;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.booking.exception.ResourcesNotFoundException;
-import org.booking.product.ProductInterface;
+import org.booking.Exceptions.ResourcesNotFoundException;
+import org.booking.Product.ProductInterface;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -77,6 +77,6 @@ class CartService implements CartInterface {
     @Override
     public Cart getCartAndItems(UUID cartId){
         return cartRepository.getCartWithItemsAndProduct(cartId)
-                .orElseThrow(() -> new ResourcesNotFoundException("Cart ID" + cartId + " does not exists!"));
+                .orElseThrow(() -> new ResourcesNotFoundException("cart ID" + cartId + " does not exists!"));
     }
 }

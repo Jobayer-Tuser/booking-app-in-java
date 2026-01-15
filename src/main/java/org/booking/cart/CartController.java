@@ -3,8 +3,7 @@ package org.booking.cart;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.booking.auth.AuthService;
-import org.booking.user.User;
+import org.booking.Auth.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -70,7 +69,7 @@ public class CartController {
         var isCleared = cartInterface.clearCartItem(cartId);
         if (isCleared != null) {
             return ResponseEntity.ok(
-                    Map.of("success", "Cart item cleared successfully!")
+                    Map.of("success", "cart item cleared successfully!")
             );
         }
         return ResponseEntity.noContent().build();

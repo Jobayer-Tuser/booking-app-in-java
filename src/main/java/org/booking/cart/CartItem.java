@@ -2,7 +2,7 @@ package org.booking.cart;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.booking.product.Product;
+import org.booking.Product.Product;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 

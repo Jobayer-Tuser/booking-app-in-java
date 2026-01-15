@@ -11,22 +11,32 @@ public class Schema {
     public static void create(String tableName, Consumer<Blueprint> callback, Context context) throws SQLException {
         Blueprint table = new Blueprint(tableName);
         callback.accept(table);
+        executeQuery(table.getSql(tableName), context);
+    }
 
-        String sql = table.getSql(tableName);
+    public static void dropIfExists(String tableName, Context context) throws SQLException {
+        executeQuery("DROP TABLE IF EXISTS " + tableName, context);
+    }
+
+    private static void executeQuery(String SqlQuery, Context context) throws SQLException {
         try (Statement statement = context.getConnection().createStatement()) {
-            statement.execute(sql);
+            statement.execute(SqlQuery);
         }
     }
 
-    public static void table(String tableName, Consumer<Blueprint> callback, Context context) throws Exception {
+    public static void table(String tableName, Consumer<Blueprint> callback, Context context) throws SQLException {
         Blueprint table = new Blueprint(tableName);
-
+        table.setAlterMode();
         callback.accept(table);
 
+        context.getConnection().setAutoCommit(false);
         try (Statement statement = context.getConnection().createStatement()) {
             for (String sql : table.getAlterationSql(tableName)) {
                 statement.execute(sql);
+                context.getConnection().commit();
             }
+        } catch (SQLException exception) {
+            context.getConnection().rollback();
         }
     }
 }

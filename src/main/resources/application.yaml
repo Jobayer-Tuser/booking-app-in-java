@@ -1,7 +1,12 @@
 server:
   port: 9000
 ---
-
+logging:
+  level:
+    root:
+    org:
+      jline: off
+---
 spring:
   config:
     import: optional:file:.env[.properties]
@@ -10,7 +15,7 @@ spring:
     version: "Booking app"
 
   datasource:
-    url: jdbc:mysql://localhost:3306/${DB_NAME}
+    url: jdbc:mysql://localhost:3306/${DB_NAME}?rewriteBatchedStatements=true&cachePrepStmts=true&useServerPrepStmts=true
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: ${DB_DRIVER}
@@ -20,7 +25,7 @@ spring:
     user: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     locations: classpath:database/migrations
-#    ignore-migrations-patterns: repeatable:missing
+  #    ignore-migrations-patterns: repeatable:missing
 
   servlet:
     multipart:
@@ -30,15 +35,35 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-      format_sql: true
     show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 100
+          batch_versioned_data: true
+        order_updates: true
+        order_inserts: true
+        generate_statistics: true
+        format_sql: true
+    open-in-view: false
 
   jwt:
     secretKey: ${JWT_SECRET}
     accessTokenExpiration: 604800 # 5 M
     refreshTokenExpiration: 604800 # 7 Day
 
+  main:
+    banner-mode: off
+
+  shell:
+    interactive:
+      enabled : true
+
+  base:
+    package: org.booking
+    path: src/main/java/org/booking
+---
 stripe:
   secret_key: ${STRIPE_SANDBOX_SECRET_KEY}
   webhook_secret_key: ${STRIPE_WEBHOOK_SECRET_KEY}
-  publishable_key: ${STRIPE_SANDBOX_PUBLISHABLE_KEY}
+#  publishable_key: ${STRIPE_SANDBOX_PUBLISHABLE_KEY}

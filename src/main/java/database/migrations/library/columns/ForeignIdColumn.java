@@ -1,25 +1,29 @@
 package database.migrations.library.columns;
 
+import lombok.Setter;
+
 public class ForeignIdColumn extends Column<ForeignIdColumn> {
 
+    @Setter
+    private String table;
     private boolean unsigned = true;
     private String referenceTable;
     private String referenceColumn = "id";
     private String onUpdateAction = null;
     private String onDeleteAction = null;
 
-    private String table;
 
     public ForeignIdColumn(String name) {
         super(name);
     }
 
-    public void setTable(String table) {
-        this.table = table;
-    }
-
     public ForeignIdColumn constrained(String table) {
         this.referenceTable = table;
+        return this;
+    }
+
+    public ForeignIdColumn constrained() {
+        this.referenceTable = name.replace("_id", "s");
         return this;
     }
 
@@ -59,20 +63,15 @@ public class ForeignIdColumn extends Column<ForeignIdColumn> {
     }
 
     public String getConstraintSql() {
-        if (referenceTable == null)
-            return null;
+        if (referenceTable == null) return null;
 
         var builder = new StringBuilder(
-                String.format("CONSTRAINT FK_%s_%s FOREIGN KEY (%s) REFERENCES %s(%s)", table, name, name, referenceTable,
-                        referenceColumn));
+                String.format("CONSTRAINT FK_%s_%s FOREIGN KEY (%s) REFERENCES %s(%s)",
+                        table, name, name, referenceTable, referenceColumn));
 
-        if (onUpdateAction != null) {
-            builder.append(" ON UPDATE ").append(onUpdateAction);
-        }
+        if (onUpdateAction != null) builder.append(" ON UPDATE ").append(onUpdateAction);
 
-        if (onDeleteAction != null) {
-            builder.append(" ON DELETE ").append(onDeleteAction);
-        }
+        if (onDeleteAction != null) builder.append(" ON DELETE ").append(onDeleteAction);
 
         return builder.toString();
     }

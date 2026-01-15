@@ -12,9 +12,9 @@ public class V10__CreateCountriesTable extends BaseJavaMigration {
     @Override
     public void migrate(Context context) throws SQLException {
 
-        Schema.create("countries", table -> {
+        Schema.create("Country", table -> {
             table.id();
-            table.string("name").notNull();
+            table.string("name");
             table.decimal("latitude", 10, 7);
             table.decimal("longitude", 10, 7);
             table.timestamps();

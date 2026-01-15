@@ -2,31 +2,63 @@ package database.seeders;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.context.ApplicationContext;
 
 @Slf4j
 @Component
-@Profile("dev")
 @RequiredArgsConstructor
-public class DatabaseSeeder implements ApplicationRunner {
+public class DatabaseSeeder {
 
-    private final List<Seeder> seeders;
+    private final ApplicationContext context;
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        if (args.containsOption("seed")){
-            log.info("Starting database seeding...");
+    /**
+     * Register seeders to run here.
+     */
+    public void seed() {
+        this.call(
+                RolesSeeder.class,
+                UserSeeder.class,
+                ApartmentTypeSeeder.class,
+                RoomTypeSeeder.class,
+                BedTypeSeeder.class
+        );
+    }
+
+    @SafeVarargs
+    public final void call(Class<? extends Seeder>... seederClasses) {
+        for (Class<? extends Seeder> seederClass : seederClasses) {
             try {
-                seeders.forEach(Seeder::run);
-                log.info("Database seeding completed successfully.");
+                Seeder seeder = context.getBean(seederClass);
+                seeder.run();
             } catch (Exception e) {
-                log.error("Error during database seeding: {}", e.getMessage());
+                log.error("Failed to run seeder {}: {}", seederClass.getSimpleName(), e.getMessage());
+                throw e;
             }
+        }
+    }
+
+    public void runMigration(String specificSeederName) {
+        log.info("Starting database seeding...");
+        try {
+            if (specificSeederName != null && !specificSeederName.isEmpty()) {
+                // Run specific seeder by name
+                try {
+                    Seeder seeder = (Seeder) context.getBean(specificSeederName);
+                    seeder.run();
+                } catch (NoSuchBeanDefinitionException e) {
+                    String beanName = Character.toLowerCase(specificSeederName.charAt(0))
+                            + specificSeederName.substring(1);
+                    Seeder seeder = (Seeder) context.getBean(beanName);
+                    seeder.run();
+                }
+            } else {
+                seed();
+            }
+            log.info("Database seeding completed.");
+        } catch (Exception e) {
+            log.error("Error during database seeding: {}", e.getMessage());
         }
     }
 }

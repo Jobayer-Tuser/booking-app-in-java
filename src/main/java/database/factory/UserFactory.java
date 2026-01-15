@@ -1,7 +1,7 @@
 package database.factory;
 
 import lombok.RequiredArgsConstructor;
-import org.booking.user.User;
+import org.booking.User.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 

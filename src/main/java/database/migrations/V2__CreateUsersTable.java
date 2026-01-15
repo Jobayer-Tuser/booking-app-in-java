@@ -13,10 +13,10 @@ public class V2__CreateUsersTable extends BaseJavaMigration {
         Schema.create("users", table -> {
             table.id();
             table.foreignId("role_id").constrained("roles").onUpdateCascade().onDeleteRestrict();
-            table.string("name").notNull();
+            table.string("name");
             table.string("email").unique();
             table.string("display_name");
-            table.string("password").notNull();
+            table.string("password");
             table.datetime("email_verified_at");
             table.timestamps();
         }, context);

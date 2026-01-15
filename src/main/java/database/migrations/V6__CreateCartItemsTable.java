@@ -15,7 +15,7 @@ public class V6__CreateCartItemsTable extends BaseJavaMigration {
             table.id();
             table.foreignId("cart_id").constrained("carts").onUpdateCascade().onDeleteRestrict();
             table.foreignId("product_id").constrained("products").onUpdateCascade().onDeleteRestrict();
-            table.integer("quantity").notNull();
+            table.integer("quantity");
         }, context);
 
         IO.println("✓ CartItems table created successfully");

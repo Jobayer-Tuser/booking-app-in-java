@@ -14,7 +14,7 @@ public class V4__CreateProductsTable extends BaseJavaMigration {
         Schema.create("products", table -> {
             table.id();
             table.foreignId("category_id").constrained("categories").onUpdateCascade().onDeleteRestrict();
-            table.string("name").notNull();
+            table.string("name");
             table.decimal("price", 10, 2);
             table.timestamps();
         }, context);
