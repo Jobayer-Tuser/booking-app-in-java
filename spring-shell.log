@@ -31,3 +31,6 @@
 1768366201658:ak:otll -=omTpeonrl
 1768366263046:make:repository -r=RoomTypeRepository
 1768377138339:db:seed
+1768886476699:db:seed -s=FacilityCategorySeeder
+1768886772930:db:seed -s=FacilitySeeder
+1768889170693:db:seed -s=ApartmentTypeSeeder

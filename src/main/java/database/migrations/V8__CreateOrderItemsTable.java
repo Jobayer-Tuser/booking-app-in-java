@@ -20,6 +20,6 @@ public class V8__CreateOrderItemsTable extends BaseJavaMigration {
             table.decimal("total_price", 10, 2);
         }, context);
 
-        IO.println("✓ Order Items table created successfully");
+        IO.println("✓ orders Items table created successfully");
     }
 }

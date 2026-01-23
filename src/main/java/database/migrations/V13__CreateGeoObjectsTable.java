@@ -14,7 +14,7 @@ public class V13__CreateGeoObjectsTable extends BaseJavaMigration {
 
         Schema.create("geo_objects", table -> {
             table.id();
-            table.foreignId("city_id").constrained("City");
+            table.foreignId("city_id").constrained("cities");
             table.string("name");
             table.decimal("latitude", 10, 7);
             table.decimal("longitude", 10, 7);

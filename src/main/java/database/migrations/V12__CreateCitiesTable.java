@@ -12,9 +12,9 @@ public class V12__CreateCitiesTable extends BaseJavaMigration {
     @Override
     public void migrate(Context context) throws SQLException {
 
-        Schema.create("City", table -> {
+        Schema.create("cities", table -> {
             table.id();
-            table.foreignId("country_id").constrained("Country").onUpdateCascade().onDeleteRestrict();
+            table.foreignId("country_id").constrained("country").onUpdateCascade().onDeleteRestrict();
             table.string("name");
             table.decimal("latitude", 10, 7);
             table.decimal("longitude", 10, 7);

@@ -1,11 +1,8 @@
 package database.seeders;
 
 import lombok.RequiredArgsConstructor;
-import org.booking.Bed.Bed;
-import org.booking.BedType.BedType;
-import org.booking.BedType.BedTypeRepository;
-import org.booking.roomtypes.RoomType;
-import org.booking.roomtypes.RoomTypeRepository;
+import org.booking.bedTypes.BedType;
+import org.booking.bedTypes.BedTypeRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

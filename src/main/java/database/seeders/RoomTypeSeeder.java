@@ -1,8 +1,6 @@
 package database.seeders;
 
 import lombok.RequiredArgsConstructor;
-import org.booking.Role.Role;
-import org.booking.Role.RoleRepository;
 import org.booking.roomtypes.RoomType;
 import org.booking.roomtypes.RoomTypeRepository;
 import org.springframework.stereotype.Component;
@@ -17,7 +15,7 @@ public class RoomTypeSeeder implements Seeder {
 
     @Override
     public void run(){
-        List<String> roles = List.of("Bed Room", "Living Room");
+        List<String> roles = List.of("beds rooms", "Living rooms");
         List<RoomType> roleEntity = roles.stream()
                 .map(RoomType::new)
                 .toList();

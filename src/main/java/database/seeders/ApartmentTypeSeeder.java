@@ -1,10 +1,8 @@
 package database.seeders;
 
 import lombok.RequiredArgsConstructor;
-import org.booking.ApartmentTypes.ApartmentType;
-import org.booking.ApartmentTypes.ApartmentTypeRepository;
-import org.booking.Role.Role;
-import org.booking.Role.RoleRepository;
+import org.booking.apartmentTypes.ApartmentType;
+import org.booking.apartmentTypes.ApartmentTypeRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

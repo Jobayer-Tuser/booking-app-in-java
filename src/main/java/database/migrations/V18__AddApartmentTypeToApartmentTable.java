@@ -14,8 +14,8 @@ public class V18__AddApartmentTypeToApartmentTable extends BaseJavaMigration {
 
         Schema.table("apartments", table -> {
             table.foreignId("apartment_type_id").constrained("apartment_types").after("id");
-            table.integer("size").unsigned();
+            table.integer("size").unsigned().defaultValue(0);
         }, context);
-        IO.println("✓ Apartment Types table created successfully");
+        IO.println("✓ apartments Types table created successfully");
     }
 }

@@ -15,6 +15,6 @@ public class V19__AddBathRoomToApartmentTable extends BaseJavaMigration {
         Schema.table("apartments", table -> {
             table.integer("bathroom").unsigned().defaultValue(0);
         }, context);
-        IO.println("✓ Added bathroom to Apartment table successfully");
+        IO.println("✓ Added bathroom to apartments table successfully");
     }
 }

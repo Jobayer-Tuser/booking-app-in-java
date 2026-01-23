@@ -15,7 +15,7 @@ spring:
     version: "Booking app"
 
   datasource:
-    url: jdbc:mysql://localhost:3306/${DB_NAME}?rewriteBatchedStatements=true&cachePrepStmts=true&useServerPrepStmts=true
+    url: jdbc:mysql://localhost:3306/${DB_NAME} #?rewriteBatchedStatements=true&cachePrepStmts=true&useServerPrepStmts=true
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: ${DB_DRIVER}
@@ -43,13 +43,11 @@ spring:
           batch_versioned_data: true
         order_updates: true
         order_inserts: true
-        generate_statistics: true
         format_sql: true
-    open-in-view: false
 
   jwt:
     secretKey: ${JWT_SECRET}
-    accessTokenExpiration: 604800 # 5 M
+    accessTokenExpiration: 900 # 5 M
     refreshTokenExpiration: 604800 # 7 Day
 
   main:
@@ -62,6 +60,10 @@ spring:
   base:
     package: org.booking
     path: src/main/java/org/booking
+
+springdoc:
+  api-docs:
+    enabled: false
 ---
 stripe:
   secret_key: ${STRIPE_SANDBOX_SECRET_KEY}

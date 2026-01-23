@@ -2,7 +2,7 @@ package org.booking.roomtypes;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.booking.Room.Room;
+import org.booking.rooms.Room;
 
 import java.time.Instant;
 import java.util.ArrayList;

@@ -22,6 +22,6 @@ public class V16__CreateApartmentTypesTable extends BaseJavaMigration {
             table.string("name");
             table.timestamps();
         }, context);
-        IO.println("✓ Apartment Types table created successfully");
+        IO.println("✓ apartments Types table created successfully");
     }
 }

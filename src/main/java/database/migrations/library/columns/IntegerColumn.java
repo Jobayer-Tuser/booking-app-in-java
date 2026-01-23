@@ -12,6 +12,6 @@ public class IntegerColumn extends Column<IntegerColumn> {
 
     @Override
     public String getDefinition() {
-        return String.format("%s INT %s %s", name, (unsigned ? "UNSIGNED" : ""), (nullable ? "" : "NOT NULL"));
+        return String.format("%s INT %s %s", name, (unsigned ? "UNSIGNED" : ""), formatDefault());
     }
 }

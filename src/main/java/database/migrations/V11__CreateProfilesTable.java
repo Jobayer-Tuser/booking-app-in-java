@@ -21,8 +21,8 @@ public class V11__CreateProfilesTable extends BaseJavaMigration {
             table.string("invoice_address");
             table.string("invoice_postcode");
             table.string("invoice_city");
-            table.foreignId("invoice_country_id").constrained("Country");
-            table.foreignId("nationality_country_id").constrained("Country");
+            table.foreignId("invoice_country_id").constrained("country");
+            table.foreignId("nationality_country_id").constrained("country");
             table.timeStamp("updated_at");
         }, context);
 

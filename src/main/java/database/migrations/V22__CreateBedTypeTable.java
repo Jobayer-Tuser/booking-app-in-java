@@ -17,6 +17,6 @@ public class V22__CreateBedTypeTable extends BaseJavaMigration {
             table.string("name");
             table.timestamps();
         }, context);
-        IO.println("✓ Created room type table successfully");
+        IO.println("✓ Created beds type table successfully");
     }
 }

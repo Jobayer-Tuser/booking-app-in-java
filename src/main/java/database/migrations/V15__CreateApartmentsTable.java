@@ -12,7 +12,7 @@ public class V15__CreateApartmentsTable extends BaseJavaMigration {
     @Override
     public void migrate(Context context) throws SQLException {
 
-        Schema.create("Apartment", table -> {
+        Schema.create("apartments", table -> {
             table.id();
             table.foreignId("property_id").constrained("properties");
             table.string("name");

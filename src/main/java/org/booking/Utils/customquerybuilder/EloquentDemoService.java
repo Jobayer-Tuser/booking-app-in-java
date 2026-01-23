@@ -19,7 +19,7 @@ public class EloquentDemoService {
                 .where("price", ">", 1000)
                 .get();
 
-        // 3. Order By
+        // 3. orders By
         @SuppressWarnings("unchecked")
         List<DemoProduct> sorted = (List<DemoProduct>) (Object) DemoProduct.query()
                 .orderBy("name", "asc")

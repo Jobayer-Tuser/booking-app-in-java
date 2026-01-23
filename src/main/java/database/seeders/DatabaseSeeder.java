@@ -22,7 +22,9 @@ public class DatabaseSeeder {
                 UserSeeder.class,
                 ApartmentTypeSeeder.class,
                 RoomTypeSeeder.class,
-                BedTypeSeeder.class
+                BedTypeSeeder.class,
+                FacilityCategorySeeder.class,
+                FacilitySeeder.class
         );
     }
 

@@ -12,6 +12,6 @@ public class BigIntegerColumn extends Column<BigIntegerColumn> {
 
     @Override
     public String getDefinition() {
-        return String.format("%s BIGINT %s %s", name, (unsigned ? "UNSIGNED" : ""), (nullable ? "" : "NOT NULL"));
+        return String.format("%s BIGINT %s %s", name, (unsigned ? "UNSIGNED" : ""), formatDefault());
     }
 }

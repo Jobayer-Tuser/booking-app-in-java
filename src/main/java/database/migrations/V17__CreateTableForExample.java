@@ -20,7 +20,7 @@ public class V17__CreateTableForExample extends BaseJavaMigration {
             table.integer("number_plate").unsigned();
             table.string("email").unique();
             table.string("number").unique();
-            table.enumeration("Role", "Admin", "User", "Editor").defaultValue("User");
+            table.enumeration("roles", "Admin", "users", "Editor").defaultValue("users");
             table.string("invoice_address", 200);
             table.string("invoice_postcode", 200);
             table.decimal("latitude", 10, 2);
