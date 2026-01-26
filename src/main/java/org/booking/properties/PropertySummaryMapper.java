@@ -3,6 +3,9 @@ package org.booking.properties;
 import lombok.AllArgsConstructor;
 import org.booking.apartments.Apartment;
 import org.booking.apartments.ApartmentDto;
+import org.booking.facility.Facility;
+import org.booking.facility.FacilityDto;
+import org.booking.facilityCategories.FacilityCategoryDto;
 import org.booking.rooms.Room;
 import org.springframework.stereotype.Component;
 
@@ -50,7 +53,26 @@ public class PropertySummaryMapper {
                 .size(apartment.getSize())
                 .beds_list(prepareBeds(apartment.getRooms()))
                 .bathrooms(apartment.getBathroom())
+                .facility_categories(prepareCategoryAndFacilities(apartment.getFacilities()))
+                .facilities(prepareFacilities(apartment.getFacilities()))
                 .build();
+    }
+
+    private Map<String, List<String>> prepareFacilities(List<Facility> facilities) {
+        return facilities.stream()
+                .collect(Collectors.groupingBy( facility -> facility.getCategory().getName(),
+                        Collectors.mapping(Facility::getName, Collectors.toList())));
+    }
+
+    private List<FacilityCategoryDto> prepareCategoryAndFacilities(List<Facility> facilities) {
+        return facilities.stream()
+                 .collect(Collectors.groupingBy(Facility::getCategory))
+                 .entrySet().stream()
+                .map(entry -> new FacilityCategoryDto(entry.getKey().getName(),
+                       entry.getValue().stream()
+                               .map(facility -> new FacilityDto(facility.getName()))
+                               .toList())
+                ).toList();
     }
 
     private String prepareBeds(List<Room> rooms) {

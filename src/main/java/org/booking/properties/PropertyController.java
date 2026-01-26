@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.booking.apartments.QApartment;
 import org.booking.apartments.QApartmentDto;
+import org.booking.facility.QFacility;
+import org.booking.facilityCategories.QFacilityCategory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,31 +52,19 @@ public class PropertyController
     {
         QProperty property = QProperty.property;
         QApartment apartment = QApartment.apartment;
+        QFacility facility = QFacility.facility;
+        QFacilityCategory category = QFacilityCategory.facilityCategory;
 
         var propertyJPAQuery = factory.selectFrom(property)
                 .leftJoin(property.apartments, apartment)
+                .leftJoin(apartment.facilities, facility)
+                .leftJoin(facility.category, category)
                 .where(property.id.eq(propertyId))
                 .where(apartment.capacityAdults.goe(request.adults())
                         .or(apartment.capacityChildren.goe(request.childs())))
-                .orderBy(property.id.desc())
+                .orderBy(apartment.capacityAdults.desc(), apartment.capacityChildren.desc())
                 .fetchFirst();
-
-        var propertyJPAQuery1 = factory.selectFrom(property)
-                .leftJoin(property.apartments, apartment)
-                .where(property.id.eq(propertyId))
-                .where(apartment.capacityAdults.goe(request.adults())
-                        .or(apartment.capacityChildren.goe(request.childs())))
-                .orderBy(property.id.desc())
-                .select(new QPropertyDto(property.id, property.name, property.addressPostcode, property.latitude, property.longitude))
-                .fetchFirst();
-
-
-//                .transform(groupBy(property.id).list(
-//                        new QPropertyDto(property.id, property.name, property.addressPostcode, property.latitude, property.longitude),set(new QApartmentDto(apartment.name, apartment.apartmentType.name, apartment.size, "bath",apartment.bathroom ))
-//                ));
-
         var property1 = propertySummaryMapper.toSingleSummary(propertyJPAQuery);
-//        PropertyDto property = propertyService.findPropertyById(propertyId, request);
-        return ResponseEntity.ok(propertyJPAQuery1);
+        return ResponseEntity.ok(property1);
     }
 }

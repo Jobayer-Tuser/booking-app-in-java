@@ -6,6 +6,7 @@ logging:
     root:
     org:
       jline: off
+      hibernate.orm.jdbc.bind: trace
 ---
 spring:
   config:
@@ -33,8 +34,6 @@ spring:
       max-request-size: 10MB
 
   jpa:
-    hibernate:
-      ddl-auto: none
     show-sql: true
     properties:
       hibernate:
@@ -44,6 +43,8 @@ spring:
         order_updates: true
         order_inserts: true
         format_sql: true
+        ddl-auto: none
+
 
   jwt:
     secretKey: ${JWT_SECRET}

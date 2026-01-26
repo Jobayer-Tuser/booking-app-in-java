@@ -44,7 +44,12 @@ public class Apartment {
     @OneToMany(mappedBy = "apartment")
     private List<Room> rooms = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "apartments")
+    @ManyToMany
+    @JoinTable(
+            name = "apartment_facility",
+            joinColumns = @JoinColumn(name = "apartment_id"),
+            inverseJoinColumns = @JoinColumn(name = "facility_id")
+    )
     private List<Facility> facilities = new ArrayList<>();
 
     @PrePersist

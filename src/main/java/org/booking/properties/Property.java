@@ -4,11 +4,14 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.booking.apartments.Apartment;
 import org.booking.cities.City;
+import org.booking.facility.Facility;
 import org.booking.users.User;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -55,6 +58,14 @@ public class Property {
 
     @OneToMany(mappedBy = "property", fetch = FetchType.EAGER)
     private Set<Apartment> apartments = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "property_facility",
+            joinColumns = @JoinColumn(name = "property_id"),
+            inverseJoinColumns = @JoinColumn(name = "facility_id")
+    )
+    private List<Facility> facilities = new ArrayList<>();
 
     @PrePersist
     protected void onCreate()

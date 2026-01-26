@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.booking.apartments.Apartment;
 import org.booking.facilityCategories.FacilityCategory;
+import org.booking.properties.Property;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +25,11 @@ public class Facility {
     @JoinColumn(name = "facility_category_id")
     private FacilityCategory category;
 
-    @ManyToMany
-    @JoinTable(
-            name = "apartment_facility",
-            joinColumns = @JoinColumn(name = "apartment_id"),
-            inverseJoinColumns = @JoinColumn(name = "facility_id")
-    )
+    @ManyToMany(mappedBy = "facilities")
     private List<Apartment> apartments = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "facilities")
+    private List<Property> properties = new ArrayList<>();
 
     public Facility(String name) {
         this.name = name;
