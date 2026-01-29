@@ -32,13 +32,39 @@ A robust Spring Boot application for managing bookings, orders, and products wit
 - **MySQL** Server
 - **Maven** (optional, wrapper included)
 
-### Access Points
-| URL | Description |
-|-----|-------------|
-| http://localhost:8080/admin/dashboard | Admin Panel (Thymeleaf) |
-| http://localhost:5173 | React Customer App |
-| http://localhost:8080/swagger-ui.html | API Documentation |
-| http://localhost:8080/h2-console | Database Console (username: sa, no password) |
+### REST API Reference
+
+| Category | Method | Endpoint | Description |
+| :--- | :--- | :--- | :--- |
+| **Auth** | `POST` | `/api/auth/login` | Authenticate user and get token |
+| | `POST` | `/api/auth/token-refresh` | Refresh access token |
+| | `GET` | `/api/auth/validated/me` | Get current authenticated user |
+| **Users** | `GET` | `/api/users` | List all users |
+| | `GET` | `/api/users/{id}` | Get user details |
+| | `POST` | `/api/users/register` | Register a new user |
+| | `PATCH` | `/api/users/{id}` | Update user details |
+| | `GET` | `/api/users/cursor` | Get users with cursor pagination |
+| | `GET` | `/api/users/sort` | Get users with sorting |
+| **Orders** | `GET` | `/api/orders` | List all orders |
+| **Carts** | `POST` | `/api/carts` | Create a new cart |
+| | `GET` | `/api/carts/{cartId}` | Get cart details |
+| | `POST` | `/api/carts/{cartId}/items` | Add item to cart |
+| | `PATCH` | `/api/carts/{cartId}/items/{productId}` | Update cart item quantity |
+| | `DELETE` | `/api/carts/{cartId}/items/{productId}` | Remove item from cart |
+| | `DELETE` | `/api/carts/{cartId}/items` | Clear entire cart |
+| **Products** | `GET` | `/api/products` | List all products |
+| | `POST` | `/api/products` | Create a new product |
+| | `PATCH` | `/api/products/{productId}` | Update a product |
+| | `DELETE` | `/api/products/{productId}/delete` | Delete a product |
+| **Checkout** | `POST` | `/api/checkout` | Process checkout |
+| | `POST` | `/api/checkout/webhook` | Stripe webhook endpoint |
+| **Properties** | `POST` | `/api/properties` | Create a new property |
+| | `GET` | `/api/properties/search` | Search for properties |
+| | `GET` | `/api/properties/{propertyId}` | Get property details |
+| | `GET` | `/api/properties/fetch/{propertyId}` | Get property summary (QueryDSL) |
+| **Roles** | `POST` | `/api/roles` | Create a new role |
+| **Misc** | `POST` | `/api/multitask/file-upload` | Upload an image file |
+| | `GET` | `/api/multitask/view-image/{file_name}` | View uploaded image |
 
 ### ⚙️ Environment Configuration
 
@@ -85,39 +111,6 @@ The application integrates with SpringDoc to provide interactive API documentati
 - **Swagger UI**: [http://localhost:9000/swagger-ui.html](http://localhost:9000/swagger-ui.html)
 - **OpenAPI Docs**: [http://localhost:9000/v3/api-docs](http://localhost:9000/v3/api-docs)
 
-### REST API Reference
-
-| Category | Method | Endpoint | Description |
-| :--- | :--- | :--- | :--- |
-| **Auth** | `POST` | `/api/auth/login` | Authenticate user and get token |
-| | `POST` | `/api/auth/token-refresh` | Refresh access token |
-| | `GET` | `/api/auth/validated/me` | Get current authenticated user |
-| **Users** | `GET` | `/api/users` | List all users |
-| | `GET` | `/api/users/{id}` | Get user details |
-| | `POST` | `/api/users/register` | Register a new user |
-| | `PATCH` | `/api/users/{id}` | Update user details |
-| | `GET` | `/api/users/cursor` | Get users with cursor pagination |
-| | `GET` | `/api/users/sort` | Get users with sorting |
-| **Orders** | `GET` | `/api/orders` | List all orders |
-| **Carts** | `POST` | `/api/carts` | Create a new cart |
-| | `GET` | `/api/carts/{cartId}` | Get cart details |
-| | `POST` | `/api/carts/{cartId}/items` | Add item to cart |
-| | `PATCH` | `/api/carts/{cartId}/items/{productId}` | Update cart item quantity |
-| | `DELETE` | `/api/carts/{cartId}/items/{productId}` | Remove item from cart |
-| | `DELETE` | `/api/carts/{cartId}/items` | Clear entire cart |
-| **Products** | `GET` | `/api/products` | List all products |
-| | `POST` | `/api/products` | Create a new product |
-| | `PATCH` | `/api/products/{productId}` | Update a product |
-| | `DELETE` | `/api/products/{productId}/delete` | Delete a product |
-| **Checkout** | `POST` | `/api/checkout` | Process checkout |
-| | `POST` | `/api/checkout/webhook` | Stripe webhook endpoint |
-| **Properties** | `POST` | `/api/properties` | Create a new property |
-| | `GET` | `/api/properties/search` | Search for properties |
-| | `GET` | `/api/properties/{propertyId}` | Get property details |
-| | `GET` | `/api/properties/fetch/{propertyId}` | Get property summary (QueryDSL) |
-| **Roles** | `POST` | `/api/roles` | Create a new role |
-| **Misc** | `POST` | `/api/multitask/file-upload` | Upload an image file |
-| | `GET` | `/api/multitask/view-image/{file_name}` | View uploaded image |
 ## 📁 Project Structure
 ```
 booking/      # Spring Boot 4.0 application
