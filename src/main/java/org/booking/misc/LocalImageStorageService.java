@@ -1,6 +1,5 @@
 package org.booking.misc;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -63,7 +62,7 @@ public class LocalImageStorageService {
         return rootPath.relativize(filePath).toString();
     }
 
-    private Resource getFileResource(String storedFileNameOrPath) throws IOException {
+    public Resource getFileResource(String storedFileNameOrPath) throws IOException {
         Path filePath = rootPath.resolve(storedFileNameOrPath).normalize().toAbsolutePath();
         Path normalizedRoot = rootPath.normalize().toAbsolutePath();
 
