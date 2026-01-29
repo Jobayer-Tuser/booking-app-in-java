@@ -144,6 +144,9 @@ public void seed() {
             // ... other seeders
     );
 }
+```
+**Endpoint**: `GET /api/users/cursor?cursor={last_id}&pageSize={size}`
+
 
 ## ⚡️ Advanced Features
 
@@ -163,6 +166,3 @@ public CursorPageResponse<User> cursorPaginationPattern(Long cursor, int pageSiz
     return new CursorPageResponse<>(users, pageSize, nextCursor, hasNext);
 }
 ```
-**Endpoint**: `GET /api/users/cursor?cursor={last_id}&pageSize={size}`
-
-
