@@ -2,6 +2,7 @@ package org.booking.users;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -45,5 +46,15 @@ public class UserController {
     public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
         var user = userService.updateUser(id, request);
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/cursor")
+    public CursorPageResponse<User> cursorPaginationPattern(@RequestParam(required = false) Long cursor, @RequestParam(defaultValue = "10") int pageSize) {
+        return userService.cursorPaginationPattern(cursor, pageSize);
+    }
+
+    @GetMapping("/sort")
+    public Page<User> retrieveUsersWithSorted(@RequestParam String field, @RequestParam int offset, @RequestParam("page") int pageSize) {
+        return userService.retrieveUsersWithSorted(field, offset, pageSize);
     }
 }

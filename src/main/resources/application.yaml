@@ -70,3 +70,7 @@ stripe:
   secret_key: ${STRIPE_SANDBOX_SECRET_KEY}
   webhook_secret_key: ${STRIPE_WEBHOOK_SECRET_KEY}
 #  publishable_key: ${STRIPE_SANDBOX_PUBLISHABLE_KEY}
+
+file:
+  upload:
+    base=path: /Users/jobayer/Maven/booking/src/main/resources/files/

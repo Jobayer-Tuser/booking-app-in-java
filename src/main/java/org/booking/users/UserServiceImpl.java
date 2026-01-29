@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import org.booking.auth.SecuredUser;
 import org.booking.exceptions.ResourcesNotFoundException;
 import org.booking.roles.RoleInterface;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,6 +43,23 @@ public class UserServiceImpl implements UserService, UserDetailsService
     @Override
     public List<UserDto> getAllUsers() {
         return userMapper.toMultipleDto(userRepository.findAll());
+    }
+
+    public Page<User> retrieveUsersWithSorted(String field, int offset, int pageSize) {
+        Sort sorted = Sort.by(Sort.Direction.ASC, field);
+        PageRequest pageRequest = PageRequest.of(offset, pageSize, sorted);
+        return userRepository.findAll(pageRequest);
+    }
+
+    public CursorPageResponse<User> cursorPaginationPattern(Long cursor, int pageSize) {
+        Pageable pageable = PageRequest.of(0, pageSize);
+        List<User> users = userRepository.cursorPaginationPattern(cursor, pageable);
+        boolean hasNext = users.size() == pageSize;
+
+        Long nextCursor = hasNext
+                ? users.getLast().getId()
+                : null;
+        return new CursorPageResponse<>(users, pageSize, nextCursor, hasNext);
     }
 
     @Override

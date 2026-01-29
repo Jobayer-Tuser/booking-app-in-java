@@ -1,5 +1,7 @@
 package org.booking.users;
 
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 public interface UserService {
@@ -12,4 +14,7 @@ public interface UserService {
     UserDto getValidatedUser(Long id);
     User findUserByEmail(String email);
     Boolean isEmailExists(String email);
+
+    Page<User>  retrieveUsersWithSorted(String field, int offset, int pageSize);
+    CursorPageResponse<User> cursorPaginationPattern(Long cursor, int pageSize);
 }
