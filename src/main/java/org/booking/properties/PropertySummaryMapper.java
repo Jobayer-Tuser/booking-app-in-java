@@ -54,7 +54,7 @@ public class PropertySummaryMapper {
                 .beds_list(prepareBeds(apartment.getRooms()))
                 .bathrooms(apartment.getBathroom())
                 .facility_categories(prepareCategoryAndFacilities(apartment.getFacilities()))
-                .facilities(prepareFacilities(apartment.getFacilities()))
+//                .facilities(prepareFacilities(apartment.getFacilities()))
                 .build();
     }
 

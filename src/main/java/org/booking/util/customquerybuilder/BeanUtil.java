@@ -1,4 +1,4 @@
-package org.booking.Utils.customquerybuilder;
+package org.booking.util.customquerybuilder;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

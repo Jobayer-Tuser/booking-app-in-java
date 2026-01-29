@@ -1,4 +1,4 @@
-package org.booking.Utils;
+package org.booking.util;
 
 import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;

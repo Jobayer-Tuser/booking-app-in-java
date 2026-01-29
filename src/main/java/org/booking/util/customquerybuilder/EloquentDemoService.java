@@ -1,4 +1,4 @@
-package org.booking.Utils.customquerybuilder;
+package org.booking.util.customquerybuilder;
 
 import org.springframework.stereotype.Service;
 import java.util.List;

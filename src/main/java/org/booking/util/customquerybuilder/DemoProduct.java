@@ -1,4 +1,4 @@
-package org.booking.Utils.customquerybuilder;
+package org.booking.util.customquerybuilder;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

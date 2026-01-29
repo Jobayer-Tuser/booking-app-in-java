@@ -32,6 +32,14 @@ A robust Spring Boot application for managing bookings, orders, and products wit
 - **MySQL** Server
 - **Maven** (optional, wrapper included)
 
+### Access Points
+| URL | Description |
+|-----|-------------|
+| http://localhost:8080/admin/dashboard | Admin Panel (Thymeleaf) |
+| http://localhost:5173 | React Customer App |
+| http://localhost:8080/swagger-ui.html | API Documentation |
+| http://localhost:8080/h2-console | Database Console (username: sa, no password) |
+
 ### ⚙️ Environment Configuration
 
 The application requires specific environment variables to run. You can set them in your IDE or environment, or create a `.env` file (if supported by your setup, though `application.yaml` reads from env vars directly).
@@ -83,10 +91,43 @@ The application integrates with SpringDoc to provide interactive API documentati
 - **Orders**: `/api/orders`
 - **Products**: `/api/products` (implied)
 - **Carts**: `/api/carts` (implied)
+## 📁 Project Structure
+```
+booking/      # Spring Boot 4.0 application
+│   ├── src/main/java/com/owasp/ecommerce/
+|        |--- config                # Security, CORS, Data initialization
+|        |--- execptions            # Global exception handler
+|        |--- console
+|        |--- validation
+|        |--- utils
+|        |--- auth                    # JWT, authentication
+|        |   |--- AuthController.java
+|        |   |--- AuthService.java
+|        |   |--- SecurityConfig.java
+|        |   |--- Jwt.java
+|        |   |--- JwtConfig.java
+|        |   |--- JwtService.java
+|        |   |--- JwtAuthFilter.java
+|        |--- users                    # User domain and related class
+|        |   |--- User.java
+|        |   |--- UserRepository.java
+|        |   |--- UserController.java
+|        |   |--- UserService.java
+|        |   |--- UserServiceImpl.java
+|        |   |--- UserMapper.java
+|        |   |--- UserDto.java
+|        |--- carts                    # Cart domain
+|        |   |--- Cart.java
+|        |   |--- CartController.java
+|        |   |--- CartService.java
+|        |   |--- CartServiceImpl.java
+|        |   |--- CartRepositoy.java
+|----------- src/main/resources
+             |--- templates
+             |--- application.yml
+```
 
 ## 🗄️ Database
-
-
 ### Java-Based Migrations
 The project uses a custom `Schema` helper within standard Flyway Java migrations to simplify DDL operations.
 

@@ -4,7 +4,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.booking.apartments.QApartment;
-import org.booking.apartments.QApartmentDto;
 import org.booking.facility.QFacility;
 import org.booking.facilityCategories.QFacilityCategory;
 import org.springframework.http.HttpStatus;
@@ -12,9 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import static com.querydsl.core.group.GroupBy.groupBy;
-import static com.querydsl.core.group.GroupBy.set;
 
 @RestController
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package org.booking.Utils;
+package org.booking.util;
 
 import jakarta.persistence.criteria.Path;
 import org.springframework.data.domain.Page;

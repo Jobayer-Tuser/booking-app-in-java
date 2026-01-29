@@ -7,7 +7,7 @@ import org.booking.cities.CityRepository;
 import org.booking.exceptions.ResourcesNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.data.jpa.domain.Specification;
-import org.booking.Utils.SpecificationBuilder;
+import org.booking.util.SpecificationBuilder;
 
 import java.util.List;
 

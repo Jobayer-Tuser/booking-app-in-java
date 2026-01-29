@@ -1,4 +1,4 @@
-package org.booking.Utils;
+package org.booking.util;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

@@ -11,11 +11,15 @@ import java.nio.file.Files;
 @RequestMapping("/api/multitask")
 public class FileUploadController {
 
-    @PostMapping("/file-upload")
-    public void restApiFileUploader(@RequestParam("image") MultipartFile imageFile) throws IOException {
-        String filePath = "/Users/jobayer/Maven/booking/src/main/resources/files/" + imageFile.getOriginalFilename();
+    private final LocalImageStorageService localImageStorageService;
 
-        imageFile.transferTo(new File(filePath));
+    public FileUploadController(LocalImageStorageService localImageStorageService) {
+        this.localImageStorageService = localImageStorageService;
+    }
+
+    @PostMapping("/file-upload")
+    public ImageMetaData restApiFileUploader(@RequestParam("image") MultipartFile imageFile) throws IOException {
+        return localImageStorageService.uploadImageFile(imageFile);
     }
 
     @GetMapping("/view-image/{file_name}")
