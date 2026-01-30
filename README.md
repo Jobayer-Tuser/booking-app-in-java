@@ -227,3 +227,22 @@ public CursorPageResponse<User> cursorPaginationPattern(Long cursor, int pageSiz
     return new CursorPageResponse<>(users, pageSize, nextCursor, hasNext);
 }
 ```
+
+
+### Custom Annotation for File Validation and Checking ID exists or not
+Usage example
+
+```java
+import org.booking.Validations.File;
+import org.springframework.web.multipart.MultipartFile;
+
+public record StoreUserRequest(
+        String name,
+
+@File(mimeTypes = { MimeTypes.JPEG, MimeTypes.PNG, MimeTypes.WEBP, MimeTypes.GIF }, 
+extensions = { FileExtension.JPG, FileExtension.JPEG, FileExtension.PNG, FileExtension.WEBP,FileExtension.GIF }, maxSize = 10)
+        MultipartFile file
+) {
+}
+
+```

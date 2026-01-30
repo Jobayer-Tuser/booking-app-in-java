@@ -5,6 +5,5 @@ public record ImageMetaData(
    String fileName,
    String originalName,
    String fileType,
-   Long fileSize,
-   byte[] fileBytes
+   Long fileSize
 ) {}
