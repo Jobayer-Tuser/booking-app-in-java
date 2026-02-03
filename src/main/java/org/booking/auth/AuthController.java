@@ -5,6 +5,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.booking.users.User;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -30,8 +32,16 @@ public class AuthController {
         return ResponseEntity.ok(new JwtResponse(accessToken));
     }
 
+    @GetMapping("/validated/profile")
+    public ResponseEntity<?> getAuthenticatedUserProfile(@AuthenticationPrincipal SecuredUser user) {
+
+        return ResponseEntity.ok().body(user.getAuthorities());
+    }
+
     @GetMapping("/validated/me")
-    public User getAuthenticatedUser() {
-        return authService.getCurrentUser();
+    @PreAuthorize("hasRole('Editor')")
+    public ResponseEntity<?> testPreAuthorizeRule(@AuthenticationPrincipal SecuredUser user) {
+
+        return ResponseEntity.ok().body(user.getAuthorities());
     }
 }

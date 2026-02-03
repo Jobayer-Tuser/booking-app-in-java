@@ -17,19 +17,23 @@ public class Jwt {
         this.secretKey = secretKey;
     }
 
-    public boolean isExpire(){
+    public boolean isExpire() {
         return claims.getExpiration().before(new Date());
     }
 
-    public Long getUserId(){
+    public Long getUserId() {
         return Long.valueOf(
                 claims.getSubject()
         );
     }
 
+    public String getUserEmail() {
+        return claims.get("email", String.class);
+    }
+
     public UserRole getRole(){
         return UserRole.valueOf(
-                claims.get("roles", String.class)
+                claims.get("role", String.class)
         );
     }
 

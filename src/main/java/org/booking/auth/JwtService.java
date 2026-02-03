@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.time.Duration;
 import java.util.Date;
 
 @Service
@@ -22,6 +23,8 @@ public class JwtService {
     private long refreshTokenExpiration;
 
     public Jwt generateAccessToken(User user) {
+        Duration.ofMinutes(15);
+        Duration.ofDays(7);
         return generateToken(user, accessTokenExpiration);
     }
 
@@ -43,7 +46,7 @@ public class JwtService {
                 .subject(user.getId().toString())
                 .add("email", user.getEmail())
                 .add("name", user.getName())
-                .add("roles", user.getRole().getName())
+                .add("role", user.getRole().getName())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpire))
                 .build();

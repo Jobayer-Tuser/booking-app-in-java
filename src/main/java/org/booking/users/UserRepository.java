@@ -27,4 +27,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             ORDER BY u.id ASC 
     """)
     List<User> cursorPaginationPattern(@Param("cursor") Long cursor, Pageable pageable);
+
+    @Query("select u from User u join fetch u.role r join fetch r.permissions where u.email = :email")
+    Optional<User> findByEmailWithPermissions(@Param("email") String email);
 }

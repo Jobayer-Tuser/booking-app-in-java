@@ -12,7 +12,7 @@ public class V2__CreateUsersTable extends BaseJavaMigration {
     public void migrate(Context context) throws SQLException {
         Schema.create("users", table -> {
             table.id();
-            table.foreignId("role_id").constrained("roles").onUpdateCascade().onDeleteRestrict();
+            table.foreignId("role_id").constrained().onUpdateCascade().onDeleteRestrict();
             table.string("name");
             table.string("email").unique();
             table.string("display_name");

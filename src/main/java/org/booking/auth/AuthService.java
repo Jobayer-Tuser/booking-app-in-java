@@ -23,11 +23,19 @@ public class AuthService {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
 
-    public User getCurrentUser() {
+    public Long getCurrentUserId() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        var userId = (Long) authentication.getPrincipal();
 
-        return userService.findUserById(userId);
+        if (authentication != null && authentication.getPrincipal() instanceof SecuredUser securedUser) {
+            return securedUser.getUserId();
+        }
+
+        throw new IllegalStateException("Cannot find user ID in the current security context");
+    }
+
+    public User getCurrentUser() {
+
+        return userService.findUserById(getCurrentUserId());
     }
 
     public String authenticateUser(LoginRequest request, HttpServletResponse response) {

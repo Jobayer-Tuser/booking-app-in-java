@@ -3,6 +3,7 @@ server:
 ---
 logging:
   level:
+#    org.springframework.security : trace
     root:
     org:
       jline: off
@@ -45,7 +46,6 @@ spring:
         format_sql: true
         ddl-auto: none
 
-
   jwt:
     secretKey: ${JWT_SECRET}
     accessTokenExpiration: 900 # 5 M
@@ -62,6 +62,20 @@ spring:
     package: org.booking
     path: src/main/java/org/booking
 
+  mail:
+    from : mailtrap.io
+    host : sandbox.smtp.mailtrap.io
+    port : 587
+    username: bf968ba3e3defe
+    password : 0c573e65e4d90f
+    protocol : smtp
+    properties :
+      mail:
+        smtp :
+          auth : true
+          starttls:
+            enabled : true
+
 springdoc:
   api-docs:
     enabled: false
@@ -74,3 +88,9 @@ stripe:
 file:
   upload:
     base=path: /Users/jobayer/Maven/booking/src/main/resources/files/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 'mappings'

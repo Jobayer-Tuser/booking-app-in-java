@@ -34,3 +34,4 @@
 1768886476699:db:seed -s=FacilityCategorySeeder
 1768886772930:db:seed -s=FacilitySeeder
 1768889170693:db:seed -s=ApartmentTypeSeeder
+1769824645306:db:seed -s=PermissionsSeeder

@@ -1,9 +1,17 @@
 package org.booking.users;
 
 import lombok.AllArgsConstructor;
+import org.booking.auth.Jwt;
+import org.booking.auth.JwtService;
 import org.booking.auth.SecuredUser;
+import org.booking.enums.VerificationType;
 import org.booking.exceptions.ResourcesNotFoundException;
+import org.booking.misc.UserCreatedEvent;
 import org.booking.roles.RoleInterface;
+import org.booking.verificationtoken.VerificationToken;
+import org.booking.verificationtoken.VerificationTokenRepository;
+import org.jspecify.annotations.NullMarked;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,21 +31,34 @@ public class UserServiceImpl implements UserService, UserDetailsService
     private final UserMapper userMapper;
     private final RoleInterface roleInterface;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher eventPublisher;
+    private final VerificationTokenRepository verificationTokenRepository;
+    private final JwtService jwtService;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email)
+    public @NullMarked UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmailWithPermissions(email)
                 .map(SecuredUser::new)
                 .orElseThrow(()-> new UsernameNotFoundException("users not found!"));
     }
 
     @Override
+    @Transactional
     public UserDto createUser(CreateUserRequest request) {
 
         var role = roleInterface.findRoleById(request.roleId());
-        var mapUser = userMapper.toCreateEntity(request, role);
+        var user = userMapper.toCreateEntity(request, role);
+        var storedUser = userRepository.save(user);
 
-        var storedUser = userRepository.save(mapUser);
+        String jwtToken = jwtService.generateAccessToken(user).toString();
+
+        var verificationToken = new VerificationToken();
+        verificationToken.setUser(user);
+        verificationToken.setType(VerificationType.EMAIL_VERIFICATION.name());
+        verificationToken.setToken(jwtToken);
+        verificationTokenRepository.save(verificationToken);
+
+        eventPublisher.publishEvent(new UserCreatedEvent(this, storedUser, jwtToken));
         return userMapper.toSingleDto(storedUser);
     }
 
