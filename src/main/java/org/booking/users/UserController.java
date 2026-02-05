@@ -42,6 +42,12 @@ public class UserController {
         return ResponseEntity.created(uri).body(user);
     }
 
+    @GetMapping("/registration/verify")
+    public ResponseEntity<String> verifyUser(@RequestParam("token") String token) {
+        userService.verifyUser(token);
+        return ResponseEntity.ok("User is verified and updated the status!");
+    }
+
     @PatchMapping("/{id}")
     public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
         var user = userService.updateUser(id, request);

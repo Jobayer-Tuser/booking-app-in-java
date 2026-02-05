@@ -41,6 +41,18 @@ public class JwtService {
         }
     }
 
+    public Claims getClaimsEvenIfExpired(String token) {
+        try {
+            return Jwts.parser()
+                    .verifyWith(encryptSecreteKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
+    }
+
     private Jwt generateToken(User user, long tokenExpire) {
         Claims claims = Jwts.claims()
                 .subject(user.getId().toString())

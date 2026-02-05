@@ -8,6 +8,7 @@ public interface UserService {
     List<UserDto> getAllUsers();
 
     UserDto createUser(CreateUserRequest request);
+    void verifyUser(String token);
     UserDto updateUser(Long id, UpdateUserRequest request);
 
     User findUserById(Long id);

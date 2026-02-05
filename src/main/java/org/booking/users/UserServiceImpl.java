@@ -1,5 +1,6 @@
 package org.booking.users;
 
+import io.jsonwebtoken.JwtException;
 import lombok.AllArgsConstructor;
 import org.booking.auth.Jwt;
 import org.booking.auth.JwtService;
@@ -22,6 +23,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -60,6 +62,39 @@ public class UserServiceImpl implements UserService, UserDetailsService
 
         eventPublisher.publishEvent(new UserCreatedEvent(this, storedUser, jwtToken));
         return userMapper.toSingleDto(storedUser);
+    }
+
+    @Override
+    public void verifyUser(String token) {
+
+        try{
+            Jwt parseToken = jwtService.parseToken(token);
+           
+            VerificationToken confirmationToken = verificationTokenRepository.findByToken(token)
+                    .orElseThrow(() -> new ResourcesNotFoundException("Token not found"));
+
+            if (confirmationToken.getVerifiedAt() != null) {
+                throw new IllegalArgumentException("Token already verified!");
+            }
+
+            if (confirmationToken.getExpiredAt().isBefore(LocalDateTime.now())) {
+                throw new IllegalArgumentException("This Token is expired please request for new token!");
+            }
+
+            confirmationToken.setVerifiedAt(LocalDateTime.now());
+            updateUserEmailVerifiedAt(confirmationToken.getUser().getEmail());
+
+        } catch (Exception e) {
+            throw new JwtException(e.getMessage());
+        }
+    }
+
+    private void updateUserEmailVerifiedAt(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Email not found in the record!"));
+
+        user.setEmailVerifiedAt(LocalDateTime.now());
+        userRepository.save(user);
     }
 
     @Override
