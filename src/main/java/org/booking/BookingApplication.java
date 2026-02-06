@@ -3,11 +3,13 @@ package org.booking;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-@SpringBootApplication
-@ComponentScan(basePackages = { "org.booking", "database" })
 @EnableAsync
+@SpringBootApplication
+@EnableJpaAuditing(auditorAwareRef = "auditorAware")
+@ComponentScan(basePackages = { "org.booking", "database" })
 public class BookingApplication {
 
     static void main(String[] args) {

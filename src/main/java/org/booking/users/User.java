@@ -9,6 +9,11 @@ import org.booking.stores.Tag;
 import org.booking.userProfiles.UserProfile;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,12 +25,13 @@ import java.util.Set;
 @Builder
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "users")
 @DynamicInsert
 @DynamicUpdate
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "users")
 @NamedEntityGraph(name = "graph.userRole", attributeNodes = @NamedAttributeNode("role"))
+@EntityListeners(AuditingEntityListener.class)
 public class User
 {
     @Id
@@ -36,8 +42,22 @@ public class User
     private String email;
     private String password;
     private LocalDateTime emailVerifiedAt;
+
+    @CreatedDate
+    @Column(updatable = false)
     private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(insertable = false)
     private LocalDateTime updatedAt;
+
+    @CreatedBy
+    @Column(updatable = false)
+    private Long createdBy;
+
+    @LastModifiedBy
+    @Column(insertable = false)
+    private Long updatedBy;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
@@ -59,19 +79,6 @@ public class User
 
     @OneToMany(mappedBy = "owner")
     private List<Property> properties = new ArrayList<>();
-
-    @PrePersist
-    protected void onCreate()
-    {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate()
-    {
-        updatedAt = LocalDateTime.now();
-    }
 
     public void attachAddress(Address address)
     {
