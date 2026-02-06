@@ -3,7 +3,7 @@ package org.booking.users;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.booking.auth.JwtService;
+import org.booking.jwt.JwtService;
 import org.booking.verificationtoken.VerificationTokenService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

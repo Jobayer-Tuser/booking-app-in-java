@@ -30,21 +30,21 @@ public class PropertyController
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<PropertyDto>> searchProperty(PropertySearchRequest request)
+    public ResponseEntity<List<PropertyDto>> searchProperty(PropertySearchCriteria request)
     {
         List<PropertyDto> property = propertyService.searchProperty(request);
         return ResponseEntity.ok(property);
     }
 
     @GetMapping("/{propertyId}")
-    public ResponseEntity<PropertyDto> findPropertyById(@PathVariable Long propertyId, PropertySearchRequest request)
+    public ResponseEntity<PropertyDto> findPropertyById(@PathVariable Long propertyId, PropertySearchCriteria request)
     {
         PropertyDto property = propertyService.findPropertyById(propertyId, request);
         return ResponseEntity.ok(property);
     }
 
     @GetMapping("fetch/{propertyId}")
-    public ResponseEntity<PropertyDto> findPropertyUsingQueryDSL(@PathVariable Long propertyId, PropertySearchRequest request)
+    public ResponseEntity<PropertyDto> findPropertyUsingQueryDSL(@PathVariable Long propertyId, PropertySearchCriteria request)
     {
         QProperty property = QProperty.property;
         QApartment apartment = QApartment.apartment;

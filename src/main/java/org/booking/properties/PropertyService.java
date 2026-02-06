@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface PropertyService {
     PropertyDto addNewProperty(@Valid StorePropertyRequest request);
-    List<PropertyDto> searchProperty(PropertySearchRequest request);
-    PropertyDto findPropertyById(Long propertyId, PropertySearchRequest request);
+    List<PropertyDto> searchProperty(PropertySearchCriteria request);
+    PropertyDto findPropertyById(Long propertyId, PropertySearchCriteria request);
 }

@@ -39,7 +39,7 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public List<PropertyDto> searchProperty(PropertySearchRequest request) {
+    public List<PropertyDto> searchProperty(PropertySearchCriteria request) {
 
         Specification<Property> spec = new SpecificationBuilder<Property>()
                 .when(request.cityId(), propertySpecifications::withCity)
@@ -53,7 +53,7 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public PropertyDto findPropertyById(Long propertyId, PropertySearchRequest request) {
+    public PropertyDto findPropertyById(Long propertyId, PropertySearchCriteria request) {
 
         var specs = new SpecificationBuilder<Property>()
                 .whereId(propertyId, propertySpecifications::findPropertyById)

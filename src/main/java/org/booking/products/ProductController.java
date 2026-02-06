@@ -13,32 +13,32 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductController {
 
-    private final ProductInterface productInterface;
+    private final ProductService productService;
 
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(@Valid @RequestBody CreateProductRequest request)
     {
-        var productDto = productInterface.createNewProduct(request);
+        var productDto = productService.createNewProduct(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(productDto);
     }
 
     @GetMapping
     public ResponseEntity<List<ProductDto>> getProducts()
     {
-        var products = productInterface.fetchAllProducts();
+        var products = productService.fetchAllProducts();
         return ResponseEntity.ok(products);
     }
 
     @PatchMapping("/{productId}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable Long productId, @RequestBody UpdateProductRequest request)
     {
-        var productDto = productInterface.updateProduct(productId, request);
+        var productDto = productService.updateProduct(productId, request);
         return ResponseEntity.ok(productDto);
     }
 
     @DeleteMapping("/{productId}/delete")
     public void deleteProduct(@PathVariable Long productId)
     {
-        productInterface.deleteProduct(productId);
+        productService.deleteProduct(productId);
     }
 }

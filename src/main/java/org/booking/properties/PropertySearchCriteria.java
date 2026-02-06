@@ -2,7 +2,7 @@ package org.booking.properties;
 
 import jakarta.validation.constraints.Positive;
 
-public record PropertySearchRequest(
+public record PropertySearchCriteria(
         Long cityId,
         Long countryId,
 

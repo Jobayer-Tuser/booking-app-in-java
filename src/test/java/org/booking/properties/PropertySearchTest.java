@@ -28,7 +28,7 @@ public class PropertySearchTest {
     @Test
     public void testSearchProperty_WithCity() {
         // Arrange
-        PropertySearchRequest request = new PropertySearchRequest(1L, null, 0, 0, null, null);
+        PropertySearchCriteria request = new PropertySearchCriteria(1L, null, 0, 0, null, null);
         when(propertyRepository.findAll(any(Specification.class))).thenReturn(Collections.emptyList());
 
         // Act
@@ -41,7 +41,7 @@ public class PropertySearchTest {
     @Test
     public void testSearchProperty_WithCapacity() {
         // Arrange
-        PropertySearchRequest request = new PropertySearchRequest(null, null, 2, 0, null, null);
+        PropertySearchCriteria request = new PropertySearchCriteria(null, null, 2, 0, null, null);
         when(propertyRepository.findAll(any(Specification.class))).thenReturn(Collections.emptyList());
 
         // Act

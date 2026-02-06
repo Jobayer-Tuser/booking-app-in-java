@@ -1,6 +1,7 @@
 package org.booking.auth;
 
 import lombok.RequiredArgsConstructor;
+import org.booking.jwt.JwtAuthFilter;
 import org.booking.roles.UserRole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

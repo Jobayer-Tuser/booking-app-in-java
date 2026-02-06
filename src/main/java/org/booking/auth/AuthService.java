@@ -3,9 +3,11 @@ package org.booking.auth;
 import lombok.RequiredArgsConstructor;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import org.booking.jwt.Jwt;
+import org.booking.jwt.JwtConfig;
+import org.booking.jwt.JwtService;
 import org.booking.users.User;
 import org.booking.users.UserService;
-import org.jspecify.annotations.Nullable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -79,7 +81,7 @@ public class AuthService {
         Cookie cookie = new Cookie("refreshToken", refreshToken);
         cookie.setHttpOnly(true);
         cookie.setPath("/api/auth/login");
-        cookie.setMaxAge(jwtConfig.getRefreshTokenExpiration());
+        cookie.setMaxAge(jwtConfig.refreshTokenExpiration());
         cookie.setSecure(true);
         response.addCookie(cookie);
     }

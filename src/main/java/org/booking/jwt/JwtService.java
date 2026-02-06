@@ -1,7 +1,8 @@
-package org.booking.auth;
+package org.booking.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.booking.users.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,25 +12,17 @@ import java.time.Duration;
 import java.util.Date;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
 
-    @Value("${spring.jwt.secretKey}")
-    private String secretKey;
-
-    @Value("${spring.jwt.accessTokenExpiration}")
-    private long accessTokenExpiration;
-
-    @Value("${spring.jwt.refreshTokenExpiration}")
-    private long refreshTokenExpiration;
+    private final JwtConfig config;
 
     public Jwt generateAccessToken(User user) {
-        Duration.ofMinutes(15);
-        Duration.ofDays(7);
-        return generateToken(user, accessTokenExpiration);
+        return generateToken(user, config.accessTokenExpiration());
     }
 
     public Jwt generateRefreshToken(User user) {
-        return generateToken(user, refreshTokenExpiration);
+        return generateToken(user, config.refreshTokenExpiration());
     }
 
     public Jwt parseToken(String token) {
@@ -76,7 +69,7 @@ public class JwtService {
 
     public SecretKey encryptSecreteKey()
     {
-        return Keys.hmacShaKeyFor(secretKey.getBytes());
+        return Keys.hmacShaKeyFor(config.secretKey().getBytes());
     }
 
 }

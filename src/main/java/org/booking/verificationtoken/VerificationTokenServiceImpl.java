@@ -1,8 +1,8 @@
 package org.booking.verificationtoken;
 
 import lombok.RequiredArgsConstructor;
-import org.booking.auth.Jwt;
-import org.booking.auth.JwtService;
+import org.booking.jwt.Jwt;
+import org.booking.jwt.JwtService;
 import org.booking.enums.VerificationType;
 import org.booking.exceptions.ResourcesNotFoundException;
 import org.booking.users.User;

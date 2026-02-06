@@ -3,7 +3,7 @@ package org.booking.carts;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.booking.exceptions.ResourcesNotFoundException;
-import org.booking.products.ProductInterface;
+import org.booking.products.ProductService;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -13,7 +13,7 @@ import java.util.UUID;
 class CartService implements CartInterface {
 
     private final CartRepository cartRepository;
-    private final ProductInterface productInterface;
+    private final ProductService productService;
     private final CartMapper cartMapper;
 
     @Override
@@ -36,7 +36,7 @@ class CartService implements CartInterface {
     @Transactional
     public CartItemDto addToCart(UUID cartId, Long productId)
     {
-        var product = productInterface.findProductById(productId);
+        var product = productService.findProductById(productId);
         var cart = getCartAndItems(cartId);
         var cartItem = cart.addItem(product);
 

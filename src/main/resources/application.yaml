@@ -63,7 +63,7 @@ spring:
     path: src/main/java/org/booking
 
   mail:
-    from : mailtrap.io
+    from : test@mailtrap.io
     host : sandbox.smtp.mailtrap.io
     port : 587
     username: bf968ba3e3defe

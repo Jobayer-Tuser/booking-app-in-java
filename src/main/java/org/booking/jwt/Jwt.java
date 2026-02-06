@@ -1,7 +1,6 @@
-package org.booking.auth;
+package org.booking.jwt;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import org.booking.roles.UserRole;
 
