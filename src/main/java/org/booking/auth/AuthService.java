@@ -35,14 +35,14 @@ public class AuthService {
 
     public User getCurrentUser() {
 
-        return userService.findUserById(getCurrentUserId());
+        return userService.getUserById(getCurrentUserId());
     }
 
     public String authenticateUser(LoginRequest request, HttpServletResponse response) {
         Authentication authRequest = new UsernamePasswordAuthenticationToken(request.email(), request.password());
         authenticationManager.authenticate(authRequest);
 
-        var user = userService.findUserByEmail(request.email());
+        var user = userService.getUserByEmail(request.email());
         var accessToken = jwtService.generateAccessToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
 
@@ -58,7 +58,7 @@ public class AuthService {
             throw new BadCredentialsException("Jwt token is expired or not valid please provide valid token");
         }
 
-        var user = userService.findUserById(jwt.getUserId());
+        var user = userService.getUserById(jwt.getUserId());
         var accessToken = jwtService.generateAccessToken(user);
         return accessToken.toString();
     }

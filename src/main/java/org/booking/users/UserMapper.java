@@ -24,16 +24,6 @@ public class UserMapper
             .build();
     }
 
-    public User toUpdateEntity(User user, UpdateUserRequest request)
-    {
-//        users.setRole(request.roleId());
-        user.setName(request.name());
-        user.setDisplayName(request.displayName());
-        user.setEmail(request.email());
-
-        return user;
-    }
-
     public UserDto toSingleDto(User user)
     {
         return new UserDto(

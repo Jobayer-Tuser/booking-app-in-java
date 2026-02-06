@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/roles")
 public class RoleController {
 
-    private final RoleInterface roleInterface;
+    private final RoleService roleService;
 
     @PostMapping
     public ResponseEntity<RoleDto> store(@RequestBody RoleDto roleDto)
     {
-        var role = roleInterface.createRole(roleDto);
+        var role = roleService.createRole(roleDto);
         if (role == null){
             return ResponseEntity.badRequest().build();
         }

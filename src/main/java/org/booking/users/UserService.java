@@ -1,21 +1,61 @@
 package org.booking.users;
 
-import org.springframework.data.domain.Page;
-
 import java.util.List;
 
+/**
+ * Core user service interface focusing on user CRUD operations.
+ * Verification and authentication concerns are handled by separate services.
+ */
 public interface UserService {
+
+    /**
+     * Creates a new user and triggers verification email process.
+     *
+     * @param request the user creation request
+     * @return the created user DTO
+     */
+    UserDto createUser(CreateUserRequest request);
+
+    /**
+     * Retrieves all users.
+     *
+     * @return list of all user DTOs
+     */
     List<UserDto> getAllUsers();
 
-    UserDto createUser(CreateUserRequest request);
-    void verifyUser(String token);
+    /**
+     * Retrieves a user by ID.
+     *
+     * @param id the user ID
+     * @return the user DTO
+     * @throws org.booking.exceptions.ResourcesNotFoundException if user not found
+     */
+    User getUserById(Long id);
+
+    /**
+     * Retrieves a user by email.
+     *
+     * @param email the user email
+     * @return the user DTO
+     * @throws org.booking.exceptions.ResourcesNotFoundException if user not found
+     */
+    User getUserByEmail(String email);
+
+    /**
+     * Updates an existing user.
+     *
+     * @param id the user ID
+     * @param request the update request
+     * @return the updated user DTO
+     * @throws org.booking.exceptions.ResourcesNotFoundException if user not found
+     */
     UserDto updateUser(Long id, UpdateUserRequest request);
 
-    User findUserById(Long id);
-    UserDto getValidatedUser(Long id);
-    User findUserByEmail(String email);
-    Boolean isEmailExists(String email);
-
-    Page<User>  retrieveUsersWithSorted(String field, int offset, int pageSize);
-    CursorPageResponse<User> cursorPaginationPattern(Long cursor, int pageSize);
+    /**
+     * Checks if an email already exists in the system.
+     *
+     * @param email the email to check
+     * @return true if email exists, false otherwise
+     */
+    boolean emailExists(String email);
 }

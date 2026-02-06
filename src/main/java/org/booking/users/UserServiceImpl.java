@@ -1,153 +1,97 @@
 package org.booking.users;
 
-import io.jsonwebtoken.JwtException;
-import lombok.AllArgsConstructor;
-import org.booking.auth.Jwt;
-import org.booking.auth.JwtService;
-import org.booking.auth.SecuredUser;
-import org.booking.enums.VerificationType;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.booking.exceptions.ResourcesNotFoundException;
-import org.booking.misc.UserCreatedEvent;
-import org.booking.roles.RoleInterface;
-import org.booking.verificationtoken.VerificationToken;
-import org.booking.verificationtoken.VerificationTokenRepository;
-import org.jspecify.annotations.NullMarked;
+import org.booking.roles.RoleService;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Implementation of UserService focusing on core CRUD operations.
+ * Email verification is handled by UserVerificationService.
+ * Authentication is handled by CustomUserDetailsService.
+ * Pagination queries are handled by UserQueryService.
+ */
+@Slf4j
 @Service
-@AllArgsConstructor
-public class UserServiceImpl implements UserService, UserDetailsService
-{
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class UserServiceImpl implements UserService {
+
     private final UserMapper userMapper;
-    private final RoleInterface roleInterface;
+    private final RoleService roleService;
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
-    private final VerificationTokenRepository verificationTokenRepository;
-    private final JwtService jwtService;
-
-    @Override
-    public @NullMarked UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmailWithPermissions(email)
-                .map(SecuredUser::new)
-                .orElseThrow(()-> new UsernameNotFoundException("users not found!"));
-    }
 
     @Override
     @Transactional
     public UserDto createUser(CreateUserRequest request) {
+        log.debug("Creating user with email: {}", request.email());
 
-        var role = roleInterface.findRoleById(request.roleId());
+        var role = roleService.findRoleById(request.roleId());
         var user = userMapper.toCreateEntity(request, role);
         var storedUser = userRepository.save(user);
 
-        String jwtToken = jwtService.generateAccessToken(user).toString();
+        // Capture base URL from current request context before async processing
+        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .build()
+                .toUriString();
 
-        var verificationToken = new VerificationToken();
-        verificationToken.setUser(user);
-        verificationToken.setType(VerificationType.EMAIL_VERIFICATION.name());
-        verificationToken.setToken(jwtToken);
-        verificationTokenRepository.save(verificationToken);
+        eventPublisher.publishEvent(new UserCreatedEvent(this, storedUser, baseUrl));
 
-        eventPublisher.publishEvent(new UserCreatedEvent(this, storedUser, jwtToken));
+        log.info("User created successfully with ID: {}", storedUser.getId());
         return userMapper.toSingleDto(storedUser);
     }
 
     @Override
-    public void verifyUser(String token) {
-
-        try{
-            Jwt parseToken = jwtService.parseToken(token);
-           
-            VerificationToken confirmationToken = verificationTokenRepository.findByToken(token)
-                    .orElseThrow(() -> new ResourcesNotFoundException("Token not found"));
-
-            if (confirmationToken.getVerifiedAt() != null) {
-                throw new IllegalArgumentException("Token already verified!");
-            }
-
-            if (confirmationToken.getExpiredAt().isBefore(LocalDateTime.now())) {
-                throw new IllegalArgumentException("This Token is expired please request for new token!");
-            }
-
-            confirmationToken.setVerifiedAt(LocalDateTime.now());
-            updateUserEmailVerifiedAt(confirmationToken.getUser().getEmail());
-
-        } catch (Exception e) {
-            throw new JwtException(e.getMessage());
-        }
-    }
-
-    private void updateUserEmailVerifiedAt(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Email not found in the record!"));
-
-        user.setEmailVerifiedAt(LocalDateTime.now());
-        userRepository.save(user);
-    }
-
-    @Override
     public List<UserDto> getAllUsers() {
+        log.debug("Retrieving all users");
         return userMapper.toMultipleDto(userRepository.findAll());
     }
 
-    public Page<User> retrieveUsersWithSorted(String field, int offset, int pageSize) {
-        Sort sorted = Sort.by(Sort.Direction.ASC, field);
-        PageRequest pageRequest = PageRequest.of(offset, pageSize, sorted);
-        return userRepository.findAll(pageRequest);
-    }
-
-    public CursorPageResponse<User> cursorPaginationPattern(Long cursor, int pageSize) {
-        Pageable pageable = PageRequest.of(0, pageSize);
-        List<User> users = userRepository.cursorPaginationPattern(cursor, pageable);
-        boolean hasNext = users.size() == pageSize;
-
-        Long nextCursor = hasNext
-                ? users.getLast().getId()
-                : null;
-        return new CursorPageResponse<>(users, pageSize, nextCursor, hasNext);
-    }
-
     @Override
-    public User findUserById(Long id) {
+    public User getUserById(Long id) {
+        log.debug("Retrieving user by ID: {}", id);
         return userRepository.findUserById(id)
-                .orElseThrow(() -> new ResourcesNotFoundException(String.format("No users found with this %s", id)));
+                .orElseThrow(() -> new ResourcesNotFoundException(
+                        String.format("User not found with ID: %d", id)));
     }
 
     @Override
-    public UserDto getValidatedUser(Long id) {
-        var user = findUserById(id);
-        return userMapper.toSingleDto(user);
-    }
-
-    @Override
-    public User findUserByEmail(String email) {
+    public User getUserByEmail(String email) {
+        log.debug("Retrieving user by email: {}", email);
         return userRepository.findByEmail(email)
-                .orElseThrow(()-> new ResourcesNotFoundException(String.format("No users found with this %s", email)));
+                .orElseThrow(() -> new ResourcesNotFoundException(
+                        String.format("User not found with email: %s", email)));
     }
 
     @Override
+    @Transactional
     public UserDto updateUser(Long id, UpdateUserRequest request) {
-        User user = userRepository.findById(id).orElseThrow(
-                ()-> new ResourcesNotFoundException(String.format("users with ID %s not found", id)));
+        log.debug("Updating user with ID: {}", id);
 
-        User updateUser = userRepository.save(userMapper.toUpdateEntity(user, request));
-        return userMapper.toSingleDto(updateUser);
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourcesNotFoundException(
+                        String.format("User not found with ID: %d", id)));
+
+        user.setName(request.name());
+        user.setDisplayName(request.displayName());
+        user.setEmail(request.email());
+
+        var savedUser = userRepository.save(user);
+
+        log.info("User updated successfully with ID: {}", id);
+        return userMapper.toSingleDto(savedUser);
     }
 
     @Override
-    public Boolean isEmailExists(String email) {
+    public boolean emailExists(String email) {
+        log.debug("Checking if email exists: {}", email);
         return userRepository.existsByEmail(email);
     }
 }

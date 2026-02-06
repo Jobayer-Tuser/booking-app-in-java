@@ -16,6 +16,8 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final UserVerificationService verificationService;
+    private final UserQueryService userQueryService;
 
     @GetMapping
     public List<UserDto> index() {
@@ -24,13 +26,13 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> show(@PathVariable Long id) {
-        var user = userService.findUserById(id);
+        var user = userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> create(@Valid @RequestBody CreateUserRequest request, UriComponentsBuilder uriBuilder) {
-        if (userService.isEmailExists(request.email())) {
+        if (userService.emailExists(request.email())) {
             return ResponseEntity.badRequest().body(
                     Map.of("email", "Email is already registered!")
             );
@@ -44,7 +46,7 @@ public class UserController {
 
     @GetMapping("/registration/verify")
     public ResponseEntity<String> verifyUser(@RequestParam("token") String token) {
-        userService.verifyUser(token);
+        verificationService.verifyUserEmail(token);
         return ResponseEntity.ok("User is verified and updated the status!");
     }
 
@@ -55,12 +57,12 @@ public class UserController {
     }
 
     @GetMapping("/cursor")
-    public CursorPageResponse<User> cursorPaginationPattern(@RequestParam(required = false) Long cursor, @RequestParam(defaultValue = "10") int pageSize) {
-        return userService.cursorPaginationPattern(cursor, pageSize);
+    public CursorPageResponse<UserDto> cursorPaginationPattern(@RequestParam(required = false) Long cursor, @RequestParam(defaultValue = "10") int pageSize) {
+        return userQueryService.getUsersWithCursorPagination(cursor, pageSize);
     }
 
     @GetMapping("/sort")
-    public Page<User> retrieveUsersWithSorted(@RequestParam String field, @RequestParam int offset, @RequestParam("page") int pageSize) {
-        return userService.retrieveUsersWithSorted(field, offset, pageSize);
+    public Page<UserDto> retrieveUsersWithSorted(@RequestParam String field, @RequestParam int offset, @RequestParam("page") int pageSize) {
+        return userQueryService.getUsersWithPagination(field, offset, pageSize);
     }
 }
