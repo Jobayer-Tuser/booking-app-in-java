@@ -1,9 +1,15 @@
 package org.booking.products;
 
 import lombok.RequiredArgsConstructor;
+import org.booking.auth.SecuredUser;
 import org.booking.exceptions.ResourcesNotFoundException;
+import org.booking.permission.Permission;
+import org.booking.roles.UserRole;
+import org.booking.stores.Category;
+import org.booking.stores.CategoryRepository;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @Service
@@ -12,6 +18,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public Product findProductById(Long id) {
@@ -20,12 +27,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto createNewProduct(CreateProductRequest request) {
-        if (request.categoryId() != null){
+    public ProductDto createNewProduct(CreateProductRequest request, SecuredUser user) throws AccessDeniedException {
 
+        if (! user.getRoleName().equals("ROLE_" + UserRole.Admin.name()) ) {
+            throw new AccessDeniedException("You are not allowed to create product");
         }
 
+        var category =  categoryRepository.getReferenceById(request.categoryId()); // does not execute a select statement
+
         var product = productMapper.toEntity(request);
+        product.setCategory(category);
         productRepository.save(product);
 
         return productMapper.toDto(product);
@@ -35,6 +46,15 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDto> fetchAllProducts() {
         List<Product> products = productRepository.findAll();
         return productMapper.toMultipleDto(products);
+    }
+
+
+    public List<?> fetchAllProductsWithProjection() {
+//        return  productRepository.getAllProducts();
+//        return productMapper.toMultipleDto(products);
+        List<ProductInfo> products = productRepository.getAllProducts(ProductInfo.class);
+        List<Product> products1 =  productRepository.getAllProducts(Product.class);
+        return products1;
     }
 
     @Override

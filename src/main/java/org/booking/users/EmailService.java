@@ -3,7 +3,6 @@ package org.booking.users;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -12,9 +11,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EmailService {
 
-    @Value("${spring.mail.from}")
-    private String fromAddress;
     private final JavaMailSender mailSender;
+    private final EmailProperties properties;
 
     public void sendVerificationEmail(User user, String token, String verificationUrl) throws MessagingException {
         String subject = "User registration Verification email";
@@ -23,7 +21,7 @@ public class EmailService {
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8");
 
         helper.setTo(user.getEmail());
-        helper.setFrom(fromAddress);
+        helper.setFrom(properties.from());
         helper.setSubject(subject);
         helper.setText(generateEmailTemplate(verificationUrl, subject), true);
         mailSender.send(mimeMessage);

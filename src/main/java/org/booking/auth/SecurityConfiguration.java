@@ -35,6 +35,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/auth/token-refresh", "/api/checkout/webhook", "/api/auth/login", "/api/users/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/properties/search", "/api/properties/*").permitAll()
+                        .requestMatchers("/frontend/**").permitAll()
                         .requestMatchers("/api/roles", "/api/roles/**").hasRole(UserRole.Admin.name())
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

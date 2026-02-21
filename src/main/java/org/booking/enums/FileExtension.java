@@ -4,7 +4,6 @@ import lombok.Getter;
 
 @Getter
 public enum FileExtension {
-    // Images
     JPG("jpg"),
     JPEG("jpeg"),
     PNG("png"),
@@ -15,8 +14,6 @@ public enum FileExtension {
     TIFF("tiff"),
     TIF("tif"),
     ICO("ico"),
-
-    // Documents
     PDF("pdf");
 
     private final String value;

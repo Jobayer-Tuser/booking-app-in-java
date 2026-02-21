@@ -30,6 +30,7 @@
         <java.version>25</java.version>
         <spring-shell.version>4.0.0</spring-shell.version>
         <querydsl.version>5.1.0</querydsl.version>
+        <jte.version>3.2.2</jte.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -178,6 +179,21 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>gg.jte</groupId>
+            <artifactId>jte-spring-boot-starter-3</artifactId>
+            <version>3.1.16</version>
+        </dependency>
+        <dependency>
+            <groupId>gg.jte</groupId>
+            <artifactId>jte</artifactId>
+            <version>3.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>gg.jte</groupId>
+            <artifactId>jte-watcher</artifactId>
+            <version>${jte.version}</version>
         </dependency>
 
     </dependencies>

@@ -3,6 +3,7 @@ package org.booking.users;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.booking.exceptions.ResourcesNotFoundException;
+import org.booking.roles.RoleRepository;
 import org.booking.roles.RoleService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
-    private final RoleService roleService;
+    private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
 
@@ -33,7 +34,7 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(CreateUserRequest request) {
         log.debug("Creating user with email: {}", request.email());
 
-        var role = roleService.findRoleById(request.roleId());
+        var role = roleRepository.getReferenceById(request.roleId());
         var user = userMapper.toCreateEntity(request, role);
         var storedUser = userRepository.save(user);
 

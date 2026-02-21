@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public class SecuredUser implements UserDetails {
@@ -77,5 +78,21 @@ public class SecuredUser implements UserDetails {
                 .map(SimpleGrantedAuthority::new);
 
         return Stream.concat(roleStream, permissionStream).toList();
+    }
+
+    public String getRoleName() {
+        return authorities.stream().map(GrantedAuthority::getAuthority)
+                .filter(Objects::nonNull)
+                .filter(authorities -> authorities.startsWith("ROLE_"))
+                .findFirst()
+                .get();
+    }
+
+    public List<String> getPermissionNames() {
+        return authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(Objects::nonNull)
+                .filter(authorities -> ! authorities.startsWith("ROLE_"))
+                .toList();
     }
 }

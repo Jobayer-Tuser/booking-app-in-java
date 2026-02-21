@@ -58,7 +58,7 @@ public class UserQueryService {
         List<User> users = userRepository.cursorPaginationPattern(cursor, pageable);
 
         boolean hasNext = users.size() == pageSize;
-        Long nextCursor = hasNext ? users.get(users.size() - 1).getId() : null;
+        Long nextCursor = hasNext ? users.getLast().getId() : null;
 
         List<UserDto> userDtos = userMapper.toMultipleDto(users);
 
