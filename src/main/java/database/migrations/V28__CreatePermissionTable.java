@@ -1,21 +1,18 @@
 package database.migrations;
 
+import database.migrations.library.BaseMigration;
 import database.migrations.library.Schema;
-import org.flywaydb.core.api.migration.BaseJavaMigration;
-import org.flywaydb.core.api.migration.Context;
 
 import java.sql.SQLException;
 
-
-public class V28__CreatePermissionTable extends BaseJavaMigration {
+public class V28__CreatePermissionTable extends BaseMigration {
 
     @Override
-    public void migrate(Context context) throws SQLException {
-
-        Schema.create("permissions", table -> {
+    protected void run(Schema schema) throws SQLException {
+        schema.create("permissions", table -> {
             table.id();
             table.string("name");
-        }, context);
-        IO.println("✓ Permission created table successfully");
+        });
+        log("Permissions table created successfully");
     }
 }

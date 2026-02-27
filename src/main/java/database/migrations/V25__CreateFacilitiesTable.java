@@ -1,22 +1,19 @@
 package database.migrations;
 
+import database.migrations.library.BaseMigration;
 import database.migrations.library.Schema;
-import org.flywaydb.core.api.migration.BaseJavaMigration;
-import org.flywaydb.core.api.migration.Context;
 
 import java.sql.SQLException;
 
-
-public class V25__CreateFacilitiesTable extends BaseJavaMigration {
+public class V25__CreateFacilitiesTable extends BaseMigration {
 
     @Override
-    public void migrate(Context context) throws SQLException {
-
-        Schema.create("facilities", table -> {
+    protected void run(Schema schema) throws SQLException {
+        schema.create("facilities", table -> {
             table.id();
             table.foreignId("facility_category_id").nullable().constrained("facility_categories");
             table.string("name");
-        }, context);
-        IO.println("✓ Facilities table successfully");
+        });
+        log("Facilities table created successfully");
     }
 }

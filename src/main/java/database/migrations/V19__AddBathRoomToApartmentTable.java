@@ -1,20 +1,17 @@
 package database.migrations;
 
+import database.migrations.library.BaseMigration;
 import database.migrations.library.Schema;
-import org.flywaydb.core.api.migration.BaseJavaMigration;
-import org.flywaydb.core.api.migration.Context;
 
 import java.sql.SQLException;
 
-
-public class V19__AddBathRoomToApartmentTable extends BaseJavaMigration {
+public class V19__AddBathRoomToApartmentTable extends BaseMigration {
 
     @Override
-    public void migrate(Context context) throws SQLException {
-
-        Schema.table("apartments", table -> {
+    protected void run(Schema schema) throws SQLException {
+        schema.table("apartments", table -> {
             table.integer("bathroom").unsigned().defaultValue(0);
-        }, context);
-        IO.println("✓ Added bathroom to apartments table successfully");
+        });
+        log("Bathroom column added to apartments table successfully");
     }
 }

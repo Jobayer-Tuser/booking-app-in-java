@@ -1,8 +1,8 @@
 package database.migrations.library.columns;
 
 public class NumericColumn extends Column<NumericColumn> {
-    private int precision = 8;
-    private int scale = 3;
+    private final int precision;
+    private final int scale;
 
     public NumericColumn(String name, int precision, int scale) {
         super(name);
@@ -11,13 +11,11 @@ public class NumericColumn extends Column<NumericColumn> {
     }
 
     public NumericColumn(String name) {
-        super(name);
+        this(name, 8, 3);
     }
 
-
     @Override
-    public String getDefinition() {
-        return String.format("%s NUMERIC(%d, %d)%s%s",
-                name, precision, scale, (nullable ? " DEFAULT NULL" : " NOT NULL"), (defaultValue != null ? formatDefault() : ""));
+    protected String sqlType() {
+        return String.format("NUMERIC(%d, %d)", precision, scale);
     }
 }

@@ -1,21 +1,18 @@
 package database.migrations;
 
+import database.migrations.library.BaseMigration;
 import database.migrations.library.Schema;
-import org.flywaydb.core.api.migration.BaseJavaMigration;
-import org.flywaydb.core.api.migration.Context;
 
 import java.sql.SQLException;
 
-
-public class V5__CreateCartsTable extends BaseJavaMigration {
+public class V5__CreateCartsTable extends BaseMigration {
 
     @Override
-    public void migrate(Context context) throws SQLException {
-        Schema.create("carts", table -> {
+    protected void run(Schema schema) throws SQLException {
+        schema.create("carts", table -> {
             table.id();
             table.timeStamp("created_id");
-        }, context);
-
-        IO.println("✓ Carts table created successfully");
+        });
+        log("Carts table created successfully");
     }
 }

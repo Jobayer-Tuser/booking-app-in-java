@@ -1,16 +1,15 @@
 package database.migrations;
 
+import database.migrations.library.BaseMigration;
 import database.migrations.library.Schema;
-import org.flywaydb.core.api.migration.BaseJavaMigration;
-import org.flywaydb.core.api.migration.Context;
 
 import java.sql.SQLException;
 
-public class V2__CreateUsersTable extends BaseJavaMigration {
+public class V2__CreateUsersTable extends BaseMigration {
 
     @Override
-    public void migrate(Context context) throws SQLException {
-        Schema.create("users", table -> {
+    protected void run(Schema schema) throws SQLException {
+        schema.create("users", table -> {
             table.id();
             table.foreignId("role_id").constrained().onUpdateCascade().onDeleteRestrict();
             table.string("name");
@@ -19,8 +18,7 @@ public class V2__CreateUsersTable extends BaseJavaMigration {
             table.string("password");
             table.datetime("email_verified_at");
             table.timestamps();
-        }, context);
-
-        IO.println("✓ Users table created successfully");
+        });
+        log("Users table created successfully");
     }
 }

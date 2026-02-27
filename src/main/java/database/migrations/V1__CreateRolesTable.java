@@ -1,22 +1,19 @@
 package database.migrations;
 
+import database.migrations.library.BaseMigration;
 import database.migrations.library.Schema;
-import org.flywaydb.core.api.migration.BaseJavaMigration;
-import org.flywaydb.core.api.migration.Context;
 
 import java.sql.SQLException;
 
-
-public class V1__CreateRolesTable extends BaseJavaMigration {
+public class V1__CreateRolesTable extends BaseMigration {
 
     @Override
-    public void migrate(Context context) throws SQLException {
-        Schema.create("roles", table -> {
+    protected void run(Schema schema) throws SQLException {
+        schema.create("roles", table -> {
             table.id();
             table.string("name");
             table.timestamps();
-        }, context);
-
-        IO.println("✓ Roles table created successfully");
+        });
+        log("Roles table created successfully");
     }
 }

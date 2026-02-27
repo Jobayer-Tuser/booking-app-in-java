@@ -1,21 +1,18 @@
 package database.migrations;
 
+import database.migrations.library.BaseMigration;
 import database.migrations.library.Schema;
-import org.flywaydb.core.api.migration.BaseJavaMigration;
-import org.flywaydb.core.api.migration.Context;
 
 import java.sql.SQLException;
 
-
-public class V18__AddApartmentTypeToApartmentTable extends BaseJavaMigration {
+public class V18__AddApartmentTypeToApartmentTable extends BaseMigration {
 
     @Override
-    public void migrate(Context context) throws SQLException {
-
-        Schema.table("apartments", table -> {
+    protected void run(Schema schema) throws SQLException {
+        schema.table("apartments", table -> {
             table.foreignId("apartment_type_id").constrained("apartment_types").after("id");
             table.integer("size").unsigned().defaultValue(0);
-        }, context);
-        IO.println("✓ apartments Types table created successfully");
+        });
+        log("Apartment type added to apartments table successfully");
     }
 }

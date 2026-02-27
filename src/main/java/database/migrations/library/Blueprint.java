@@ -5,6 +5,8 @@ import database.migrations.library.columns.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Blueprint {
 
@@ -15,11 +17,13 @@ public class Blueprint {
     private final List<String> multiColumnUniquesConstraints = new ArrayList<>();
     private final List<String> foreignKeysToDrop = new ArrayList<>();
 
-    public Blueprint() {}
+    public Blueprint() {
+    }
+
     public Blueprint(String tableName) {
         this.tableName = tableName;
     }
-    
+
     public void setAlterMode() {
         this.isAlterMode = true;
     }
@@ -30,12 +34,7 @@ public class Blueprint {
     }
 
     public void id() {
-        addColumn(new Column<BigIntegerColumn>("id") {
-            @Override
-            public String getDefinition() {
-                return "id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY";
-            }
-        });
+        columns.add(new RawColumn("id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY"));
     }
 
     public ForeignIdColumn foreignId(String name) {
@@ -89,8 +88,7 @@ public class Blueprint {
     }
 
     public void unique(String... columnNames) {
-        String cols = String.join(", ", columnNames);
-        multiColumnUniquesConstraints.add(String.format("UNIQUE (%s)", cols));
+        multiColumnUniquesConstraints.add(String.format("UNIQUE (%s)", String.join(", ", columnNames)));
     }
 
     public void softDeletes() {
@@ -106,21 +104,17 @@ public class Blueprint {
     }
 
     public String getSql(String tableName) {
-
-        List<String> createQuery = new ArrayList<>();
-        
-        columns.forEach(c -> createQuery.add(c.getDefinition()));
-        
-        columns.stream()
+        Stream<String> definitions = columns.stream().map(Column::getDefinition);
+        Stream<String> constraints = columns.stream()
                 .filter(ForeignIdColumn.class::isInstance)
                 .map(ForeignIdColumn.class::cast)
                 .map(ForeignIdColumn::getConstraintSql)
-                .filter(Objects::nonNull)
-                .forEach(createQuery::add);
+                .filter(Objects::nonNull);
 
-        createQuery.addAll(multiColumnUniquesConstraints);
+        String finalQuery = Stream.concat(
+                Stream.concat(definitions, constraints),
+                multiColumnUniquesConstraints.stream()).collect(Collectors.joining(", "));
 
-        var finalQuery = String.join(", ", createQuery);
         return String.format("CREATE TABLE %s (%s)", tableName, finalQuery);
     }
 
@@ -134,46 +128,33 @@ public class Blueprint {
     }
 
     public void dropForeign(String columnName) {
-        String constraintName = String.format("FK_%s_%s", tableName, columnName);
-        foreignKeysToDrop.add(constraintName);
+        foreignKeysToDrop.add(String.format("FK_%s_%s", tableName, columnName));
     }
 
     public List<String> getAlterationSql(String tableName) {
         List<String> alterQuery = new ArrayList<>();
 
-        getDropColumnQuery(tableName, alterQuery);
-        getAlterTableQuery(tableName, alterQuery);
+        foreignKeysToDrop.stream()
+                .map(fk -> String.format("ALTER TABLE %s DROP FOREIGN KEY %s", tableName, fk))
+                .forEach(alterQuery::add);
 
-        return alterQuery;
-    }
+        columnsToDrop.stream()
+                .map(col -> String.format("ALTER TABLE %s DROP COLUMN %s", tableName, col))
+                .forEach(alterQuery::add);
 
-    private void getAlterTableQuery(String tableName, List<String> alterQuery) {
         columns.forEach(column -> {
-            var sql = new StringBuilder();
-
-            sql.append(String.format("ALTER TABLE %s ADD %s", tableName, column.getDefinition()));
-
-            if (column.afterColumn() != null) {
-                sql.append(" AFTER ").append(column.afterColumn());
-            }
-
-            alterQuery.add(sql.toString());
+            String after = column.afterColumn() != null ? " AFTER " + column.afterColumn() : "";
+            alterQuery.add(String.format("ALTER TABLE %s ADD %s%s", tableName, column.getDefinition(), after));
 
             if (column instanceof ForeignIdColumn foreignIdCol) {
                 String rule = foreignIdCol.getConstraintSql();
-                if ( rule != null ) {
+                if (rule != null) {
                     alterQuery.add(String.format("ALTER TABLE %s ADD %s", tableName, rule));
                 }
             }
         });
-    }
 
-    private void getDropColumnQuery(String tableName, List<String> alterQuery) {
-        foreignKeysToDrop.forEach(constraintName
-                -> alterQuery.add(String.format("ALTER TABLE %s DROP FOREIGN KEY %s", tableName, constraintName)));
-
-        columnsToDrop.forEach(colName ->
-                alterQuery.add(String.format("ALTER TABLE %s DROP COLUMN %s", tableName, colName)));
+        return alterQuery;
     }
 
     private static class RawColumn extends Column<RawColumn> {

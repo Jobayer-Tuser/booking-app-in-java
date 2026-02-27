@@ -7,7 +7,9 @@ public abstract class Column<T extends Column<T>> {
     protected String afterColumn = null;
     protected Object defaultValue = null;
 
-    public Column(String name) { this.name = name; }
+    public Column(String name) {
+        this.name = name;
+    }
 
     @SuppressWarnings("unchecked")
     public T nullable() {
@@ -33,15 +35,29 @@ public abstract class Column<T extends Column<T>> {
         return (T) this;
     }
 
-    protected String formatDefault() {
-        if (defaultValue == null) return "";
-        if (defaultValue instanceof String) return "DEFAULT '" + defaultValue + "'";
-        return "DEFAULT " + defaultValue;
-    }
-
     public String afterColumn() {
         return afterColumn;
     }
 
-    public abstract String getDefinition();
+    // Subclasses define only the SQL type token, e.g. "VARCHAR(255)", "BIGINT
+    // UNSIGNED"
+    protected abstract String sqlType();
+
+    // Base class assembles the full column definition — no
+    // formatNullable()/formatDefault() needed in subclasses
+    public String getDefinition() {
+        return name + " " + sqlType() + formatNullable() + formatDefault() + (unique ? " UNIQUE" : "");
+    }
+
+    protected String formatNullable() {
+        return nullable ? " DEFAULT NULL" : " NOT NULL";
+    }
+
+    protected String formatDefault() {
+        if (defaultValue == null)
+            return "";
+        if (defaultValue instanceof String)
+            return " DEFAULT '" + defaultValue + "'";
+        return " DEFAULT " + defaultValue;
+    }
 }

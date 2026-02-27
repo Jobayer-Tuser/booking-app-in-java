@@ -1,8 +1,8 @@
 package database.migrations.library.columns;
 
 public class DecimalColumn extends Column<DecimalColumn> {
-    private int precision = 10;
-    private int scale = 2;
+    private final int precision;
+    private final int scale;
 
     public DecimalColumn(String name, int precision, int scale) {
         super(name);
@@ -11,7 +11,7 @@ public class DecimalColumn extends Column<DecimalColumn> {
     }
 
     @Override
-    public String getDefinition() {
-        return String.format("%s DECIMAL(%d, %d)%s%s", name, precision, scale, (nullable ? " DEFAULT NULL" : " NOT NULL"), formatDefault());
+    protected String sqlType() {
+        return String.format("DECIMAL(%d, %d)", precision, scale);
     }
 }

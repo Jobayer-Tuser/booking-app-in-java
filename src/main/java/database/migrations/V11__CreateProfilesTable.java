@@ -1,18 +1,15 @@
 package database.migrations;
 
+import database.migrations.library.BaseMigration;
 import database.migrations.library.Schema;
-import org.flywaydb.core.api.migration.BaseJavaMigration;
-import org.flywaydb.core.api.migration.Context;
 
 import java.sql.SQLException;
 
-
-public class V11__CreateProfilesTable extends BaseJavaMigration {
+public class V11__CreateProfilesTable extends BaseMigration {
 
     @Override
-    public void migrate(Context context) throws SQLException {
-
-        Schema.create("profiles", table -> {
+    protected void run(Schema schema) throws SQLException {
+        schema.create("profiles", table -> {
             table.id();
             table.foreignId("user_id").constrained("users").onUpdateCascade().onDeleteRestrict();
             table.string("gender", 32);
@@ -24,9 +21,7 @@ public class V11__CreateProfilesTable extends BaseJavaMigration {
             table.foreignId("invoice_country_id").constrained("country");
             table.foreignId("nationality_country_id").constrained("country");
             table.timeStamp("updated_at");
-        }, context);
-
-
-        IO.println("✓ Profiles table created successfully");
+        });
+        log("Profiles table created successfully");
     }
 }
