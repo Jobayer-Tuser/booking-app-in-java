@@ -166,6 +166,11 @@ public class Blueprint {
         }
 
         @Override
+        protected String sqlType() {
+            return "";
+        }
+
+        @Override
         public String getDefinition() {
             return definition;
         }
