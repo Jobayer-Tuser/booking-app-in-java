@@ -246,3 +246,129 @@ extensions = { FileExtension.JPG, FileExtension.JPEG, FileExtension.PNG, FileExt
 }
 
 ```
+
+# 🚀 Dynamic JPA Specifications with `SpecificationBuilder`
+
+Building complex, dynamic database queries in Spring Data JPA can often lead to messy, deeply nested `if` statements. The `SpecificationBuilder` is a utility class designed to solve this by providing a clean, fluent, and functional approach to crafting JPA `Specification`s.
+
+This allows you to dynamically compose queries based on user input, optional parameters, and complex conditions while keeping your codebase highly readable and maintainable.
+
+---
+
+## 🌟 Key Features
+
+* **Fluent API**: Chain conditions seamlessly, making the code read like natural language.
+* **Functional Approach**: Pass method references (e.g., `spec::withCity`) directly to the builder.
+* **Null-Safety Built-in**: The `.when()` methods automatically check for `null` parameters, preventing `NullPointerException`s and avoiding empty query conditions.
+* **Eager Fetching Support**: Built-in support for resolving N+1 query problems by defining `LEFT JOIN` fetches using `.load()`.
+
+---
+
+## 🛠️ The `SpecificationBuilder` API
+
+Here are the primary methods available in the `SpecificationBuilder`:
+
+| Method | Description |
+| :--- | :--- |
+| `when(boolean condition, Specification<T> spec)` | Appends the specification only if the `condition` is `true`. |
+| `when(V value, Function<V, Specification<T>> func)` | Appends the specification function result if the `value` is not `null`. |
+| `whereId(V value, Function<V, Specification<T>> func)` | Functions similarly to `when()` but semantically emphasizes an ID-based lookup. |
+| `load(String entity)` | Triggers a `LEFT JOIN` fetch on the specified entity string to avoid N+1 issues. |
+| `load(Class<?> entityClz)` | Triggers a `LEFT JOIN` fetch on the specific entity class implicitly. |
+| `build()` | Returns the fully composited `Specification<T>` ready to be passed to a repository. |
+
+---
+
+## 💻 Real-World Example
+
+Let's look at how this simplifies a real-world use case inside `PropertyServiceImpl`, where properties are searched based on dynamic criteria like city, country, and capacity.
+
+### ❌ Without `SpecificationBuilder` (The Old Way)
+
+```java
+public Specification<Property> buildSpec(PropertySearchCriteria request) {
+    return (root, query, cb) -> {
+        Predicate predicate = cb.conjunction();
+        
+        if (request.cityId() != null) {
+            predicate = cb.and(predicate, propertySpecifications.withCity(request.cityId()).toPredicate(root, query, cb));
+        }
+        
+        if (request.countryId() != null) {
+            predicate = cb.and(predicate, propertySpecifications.withCountry(request.countryId()).toPredicate(root, query, cb));
+        }
+        
+        if (request.adults() != null || request.childs() != null) {
+            predicate = cb.and(predicate, propertySpecifications.withCapacity(request.adults(), request.childs()).toPredicate(root, query, cb));
+        }
+
+        return predicate;
+    };
+}
+```
+
+### ✅ With `SpecificationBuilder` (The Clean Way)
+
+Using the custom builder, the same logic becomes exceptionally clean and declarative:
+
+```java
+@Override
+public List<PropertyDto> searchProperty(PropertySearchCriteria request) {
+    
+    // 1. Build the specification dynamically
+    Specification<Property> spec = new SpecificationBuilder<Property>()
+            // Only applies if request.cityId() is NOT null
+            .when(request.cityId(), propertySpecifications::withCity)
+            
+            // Only applies if request.countryId() is NOT null
+            .when(request.countryId(), propertySpecifications::withCountry)
+            
+            // Applies if the boolean condition is true
+            .when(request.adults() != null || request.childs() != null,
+                    propertySpecifications.withCapacity(request.adults(), request.childs()))
+            
+            .build();
+
+    // 2. Fetch from repository
+    var properties = propertyRepository.findAll(spec);
+    
+    // 3. Map to DTOs
+    return propertySummaryMapper.summary(properties);
+}
+```
+
+### 🔍 Advanced Usage: Fetching and Identity Lookups
+
+You can also handle conditional logic mixed with eager loading strategies effortlessly:
+
+```java
+@Override
+public PropertyDto findPropertyById(Long propertyId, PropertySearchCriteria request) {
+
+    var specs = new SpecificationBuilder<Property>()
+            // Lookup by ID
+            .whereId(propertyId, propertySpecifications::findPropertyById)
+            
+            // Optional conditional specifications
+            .when(request.adults() != null || request.childs() != null,
+                    propertySpecifications.withCapacity(request.adults(), request.childs()))
+            
+            // Unconditional specifications (pass 'true')
+            .when(true, propertySpecifications.orderByCapacity())
+            
+            // Fix N+1 issues by eager loading entities
+            .load(City.class) 
+            
+            .build();
+
+    return propertyRepository.findOne(specs)
+            .map(propertySummaryMapper::toSingleSummary)
+            .orElseThrow(() -> new ResourcesNotFoundException(String.format("We could not find any property with Id %s", propertyId)));
+}
+```
+
+## 🎯 Why Use This Pattern?
+
+1. **Reduces Boilerplate**: Eliminates the manual underlying `CriteriaBuilder` API handling.
+2. **Improves Readability**: At a glance, any developer can see exactly what queries dynamically apply to a model.
+3. **Encourages Reusability**: Makes it extremely easy to reuse small, focused `Specification` components natively within a service layer.

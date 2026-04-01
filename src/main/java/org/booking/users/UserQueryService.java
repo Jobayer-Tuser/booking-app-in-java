@@ -37,6 +37,9 @@ public class UserQueryService {
                 field, page, pageSize);
 
         Sort sort = Sort.by(Sort.Direction.ASC, field);
+        // Use Case: Ideal for complex sorting involving multiple fields with different directions
+        Sort complexSorting = Sort.by(Sort.Order.desc("lastName"), Sort.Order.asc("salary"));
+
         Pageable pageable = PageRequest.of(page, pageSize, sort);
 
         return userRepository.findAll(pageable)
